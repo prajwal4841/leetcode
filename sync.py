@@ -25,6 +25,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -219,10 +220,66 @@ Their code ({lang}):
 """
 
 
+def _intuition_via_api(prompt, api_key):
+    """POST to Anthropic Messages API via curl. Returns text or None."""
+    body = json.dumps({
+        "model": CLAUDE_MODEL,
+        "max_tokens": 200,
+        "messages": [{"role": "user", "content": prompt}],
+    })
+    r = subprocess.run(
+        [
+            "curl", "-sS", "--max-time", "60",
+            "-X", "POST", "https://api.anthropic.com/v1/messages",
+            "-H", f"x-api-key: {api_key}",
+            "-H", "anthropic-version: 2023-06-01",
+            "-H", "content-type: application/json",
+            "--data-binary", "@-",
+            "-w", "\n__HTTP__%{http_code}",
+        ],
+        input=body, capture_output=True, text=True,
+    )
+    if r.returncode != 0:
+        print(f"      (anthropic api curl failed: {r.stderr.strip()[:200]})")
+        return None
+    out = r.stdout
+    m = re.search(r"__HTTP__(\d+)\s*$", out)
+    http = int(m.group(1)) if m else 0
+    payload = out[: m.start()] if m else out
+    if http >= 400:
+        print(f"      (anthropic api HTTP {http}: {payload[:200]})")
+        return None
+    try:
+        data = json.loads(payload)
+        blocks = data.get("content") or []
+        text = "".join(b.get("text", "") for b in blocks if b.get("type") == "text")
+        return text.strip() or None
+    except Exception as e:
+        print(f"      (anthropic api parse error: {e})")
+        return None
+
+
+def _intuition_via_cli(prompt):
+    """Call local `claude --print`. Returns text or None."""
+    try:
+        r = subprocess.run(
+            ["claude", "--print", "--model", CLAUDE_MODEL],
+            input=prompt, capture_output=True, text=True, timeout=60,
+        )
+        if r.returncode != 0:
+            print(f"      (claude cli failed rc={r.returncode}: {r.stderr.strip()[:200]})")
+            return None
+        return r.stdout.strip() or None
+    except FileNotFoundError:
+        return None  # cli not installed
+    except Exception as e:
+        print(f"      (intuition generation error: {e})")
+        return None
+
+
 def generate_intuition(problem_data):
-    """Call `claude --print` to produce a 3-line revision note. Returns None on failure."""
-    stmt = problem_data.get("statement_md") or ""
-    stmt = stmt[:2500]  # trim long statements
+    """Produce a 3-line revision note. Prefers Anthropic API (works in CI), falls back to `claude` CLI."""
+    stmt = (problem_data.get("statement_md") or "")[:2500]
     code = problem_data.get("code") or ""
     if not code:
         return None
@@ -233,18 +290,10 @@ def generate_intuition(problem_data):
         lang=problem_data.get("lang_verbose") or "code",
         code=code[:4000],
     )
-    try:
-        r = subprocess.run(
-            ["claude", "--print", "--model", CLAUDE_MODEL],
-            input=prompt, capture_output=True, text=True, timeout=60,
-        )
-        if r.returncode != 0:
-            print(f"      (claude cli failed rc={r.returncode}: {r.stderr.strip()[:200]})")
-            return None
-        return r.stdout.strip()
-    except Exception as e:
-        print(f"      (intuition generation error: {e})")
-        return None
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if api_key:
+        return _intuition_via_api(prompt, api_key)
+    return _intuition_via_cli(prompt)
 
 
 def fetch_problem_full(session, q):
@@ -474,9 +523,14 @@ def main():
             todo_notes = list(state["problems"].values())
         else:
             todo_notes = [p for p in state["problems"].values() if not p.get("intuition")]
-        if todo_notes:
-            print(f"Generating {len(todo_notes)} intuition note(s) via `claude` CLI...")
-            # Build once upfront so solved.md reflects all fetched problems immediately (even if intuitions pending)
+
+        has_llm = bool(os.environ.get("ANTHROPIC_API_KEY")) or shutil.which("claude") is not None
+
+        if todo_notes and not has_llm:
+            print(f"Skipping {len(todo_notes)} intuition note(s): no ANTHROPIC_API_KEY set and `claude` CLI not found.")
+            print("Placeholders will show in solved.md; run locally (with `claude` CLI) to fill them in.")
+        elif todo_notes:
+            print(f"Generating {len(todo_notes)} intuition note(s)...")
             build_md(state)
             for i, p in enumerate(todo_notes, 1):
                 print(f"  [{i}/{len(todo_notes)}] {p['frontendQuestionId']}. {p['title']}")
@@ -484,7 +538,6 @@ def main():
                 if note:
                     p["intuition"] = note
                     save_state(state)
-                # Rebuild solved.md every 10 notes so you can watch progress
                 if i % 10 == 0 or i == len(todo_notes):
                     build_md(state)
         else:

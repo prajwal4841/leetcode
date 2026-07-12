@@ -1,0 +1,53 @@
+name: Sync LeetCode
+
+on:
+  schedule:
+    # Every 6 hours. GitHub cron can drift by 15-20 min under load; that's fine here.
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # manual trigger from Actions tab
+
+permissions:
+  contents: write  # needed to push commits back
+
+concurrency:
+  group: sync-leetcode
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Sync from LeetCode
+        env:
+          LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
+          # Intentionally no ANTHROPIC_API_KEY: CI fetches problems + code and
+          # leaves intuition notes as placeholders. Fill them in locally with:
+          #   python3 sync.py
+          # which uses the `claude` CLI on your Mac (free with your subscription).
+        run: |
+          if [ -z "$LEETCODE_SESSION" ]; then
+            echo "::error::LEETCODE_SESSION secret is empty or unset. Add it under repo Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          python -u sync.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "prajwal4841"
+          git config user.email "prajwal4841@users.noreply.github.com"
+          if [ -n "$(git status --porcelain solved.md state.json)" ]; then
+            git add solved.md state.json
+            git commit -m "sync: auto-update from LeetCode ($(date -u +%Y-%m-%d))"
+            git push
+            echo "Pushed updates."
+          else
+            echo "No changes to commit."
+          fi
