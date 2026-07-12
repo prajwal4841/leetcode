@@ -3939,6 +3939,60 @@
       "memory": 49660000,
       "submitted_at": 1783864217,
       "intuition": "Pattern: Right-to-left single pass\nKey idea: Traversing backwards, we store the maximum of all right elements at each position, updating max as we go.\nComplexity: O(n) time / O(n) space"
+    },
+    "concatenation-of-array": {
+      "frontendQuestionId": "1929",
+      "title": "Concatenation of Array",
+      "titleSlug": "concatenation-of-array",
+      "difficulty": "Easy",
+      "acRate": 90.1941739681714,
+      "topicTags": [
+        {
+          "name": "Array",
+          "slug": "array"
+        },
+        {
+          "name": "Simulation",
+          "slug": "simulation"
+        }
+      ],
+      "statement_md": "Given an integer array `nums` of length `n`, you want to create an array `ans` of length `2n` where `ans[i] == nums[i]` and `ans[i + n] == nums[i]` for `0 <= i < n` (**0-indexed**).\n\nSpecifically, `ans` is the **concatenation** of two `nums` arrays.\n\nReturn *the array *`ans`.\n\n\u00a0\n\nExample 1:\n\n```\n**Input:** nums = [1,2,1]\n**Output:** [1,2,1,1,2,1]\n**Explanation:** The array ans is formed as follows:\n- ans = [nums[0],nums[1],nums[2],nums[0],nums[1],nums[2]]\n- ans = [1,2,1,1,2,1]\n```\n\nExample 2:\n\n```\n**Input:** nums = [1,3,2,1]\n**Output:** [1,3,2,1,1,3,2,1]\n**Explanation:** The array ans is formed as follows:\n- ans = [nums[0],nums[1],nums[2],nums[3],nums[0],nums[1],nums[2],nums[3]]\n- ans = [1,3,2,1,1,3,2,1]\n```\n\n\u00a0\n\n**Constraints:**\n\n\t- `n == nums.length`\n\t- `1 <= n <= 1000`\n\t- `1 <= nums[i] <= 1000`",
+      "code": "class Solution {\n    public int[] getConcatenation(int[] nums) {\n        int n = nums.length;\n        int[] ans = new int[2*n];\n\n        for(int i=0;i<n;i++){\n            ans[i]=nums[i];\n            ans[i+n]=nums[i];\n        }\n\n        return ans;\n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 1,
+      "memory": 47296000,
+      "submitted_at": 1783864852
+    },
+    "append-characters-to-string-to-make-subsequence": {
+      "frontendQuestionId": "2486",
+      "title": "Append Characters to String to Make Subsequence",
+      "titleSlug": "append-characters-to-string-to-make-subsequence",
+      "difficulty": "Medium",
+      "acRate": 73.09442203765404,
+      "topicTags": [
+        {
+          "name": "Two Pointers",
+          "slug": "two-pointers"
+        },
+        {
+          "name": "String",
+          "slug": "string"
+        },
+        {
+          "name": "Greedy",
+          "slug": "greedy"
+        }
+      ],
+      "statement_md": "You are given two strings `s` and `t` consisting of only lowercase English letters.\n\nReturn *the minimum number of characters that need to be appended to the end of *`s`* so that *`t`* becomes a **subsequence** of *`s`.\n\nA **subsequence** is a string that can be derived from another string by deleting some or no characters without changing the order of the remaining characters.\n\n\u00a0\n\nExample 1:\n\n```\n**Input:** s = \"coaching\", t = \"coding\"\n**Output:** 4\n**Explanation:** Append the characters \"ding\" to the end of s so that s = \"coachingding\".\nNow, t is a subsequence of s (\"**co**aching**ding**\").\nIt can be shown that appending any 3 characters to the end of s will never make t a subsequence.\n```\n\nExample 2:\n\n```\n**Input:** s = \"abcde\", t = \"a\"\n**Output:** 0\n**Explanation:** t is already a subsequence of s (\"**a**bcde\").\n```\n\nExample 3:\n\n```\n**Input:** s = \"z\", t = \"abcde\"\n**Output:** 5\n**Explanation:** Append the characters \"abcde\" to the end of s so that s = \"zabcde\".\nNow, t is a subsequence of s (\"z**abcde**\").\nIt can be shown that appending any 4 characters to the end of s will never make t a subsequence.\n```\n\n\u00a0\n\n**Constraints:**\n\n\t- `1 <= s.length, t.length <= 10^5`\n\t- `s` and `t` consist only of lowercase English letters.",
+      "code": "class Solution {\n    public int appendCharacters(String s, String t) {\n         int n = s.length();\n        int m = t.length();\n        int i = 0;\n        int j = 0;\n\n        while(i<n && j<m){\n            if(s.charAt(i) == t.charAt(j)){\n                j++;\n            }\n            i++;\n        }\n        System.out.println(j);\n        return Integer.max(0,t.length()-j);\n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 6,
+      "memory": 47312000,
+      "submitted_at": 1783865619
     }
   }
 }
