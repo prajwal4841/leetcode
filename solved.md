@@ -1,6 +1,6 @@
 # LeetCode Solved Problems — Revision Sheet
 
-**Total: 127**  |  Easy: 25  |  Medium: 89  |  Hard: 13
+**Total: 128**  |  Easy: 26  |  Medium: 89  |  Hard: 13
 
 Each problem is filed under its most specific topic tag (rarest tag it carries).
 
@@ -31,6 +31,7 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Prefix Sum (2)](#prefix-sum-2)
 - [Stack (2)](#stack-2)
 - [Topological Sort (2)](#topological-sort-2)
+- [Array (1)](#array-1)
 - [Bucket Sort (1)](#bucket-sort-1)
 - [Combinatorics (1)](#combinatorics-1)
 - [Counting (1)](#counting-1)
@@ -10774,6 +10775,83 @@ class Solution {
         vis[i]=2;
         s.push(i);
         return true;
+    }
+}
+```
+
+</details>
+
+---
+
+## Array (1)
+
+### 🟢 1299. Replace Elements with Greatest Element on Right Side
+
+**Easy** · 🏷️ Array · 📅 2026-07-12
+
+#### 📄 Problem
+
+Given an array `arr`, replace every element in that array with the greatest element among the elements to its right, and replace the last element with `-1`.
+
+After doing so, return the array.
+
+ 
+
+Example 1:
+
+```
+**Input:** arr = [17,18,5,4,6,1]
+**Output:** [18,6,6,6,1,-1]
+**Explanation:** 
+- index 0 --> the greatest element to the right of index 0 is index 1 (18).
+- index 1 --> the greatest element to the right of index 1 is index 4 (6).
+- index 2 --> the greatest element to the right of index 2 is index 4 (6).
+- index 3 --> the greatest element to the right of index 3 is index 4 (6).
+- index 4 --> the greatest element to the right of index 4 is index 5 (1).
+- index 5 --> there are no elements to the right of index 5, so we put -1.
+```
+
+Example 2:
+
+```
+**Input:** arr = [400]
+**Output:** [-1]
+**Explanation:** There are no elements to the right of index 0.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= arr.length <= 10^4`
+	- `1 <= arr[i] <= 10^5`
+
+#### 💡 Revision note
+
+```text
+Pattern: Right-to-left single pass
+Key idea: Traversing backwards, we store the maximum of all right elements at each position, updating max as we go.
+Complexity: O(n) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int[] replaceElements(int[] arr) {
+        int n = arr.length;
+
+        int[] pf = new int[n];
+        pf[n-1]=-1;
+        int maxTillNow = Integer.max(pf[n-1],arr[n-1]);
+
+        for(int i = n-2; i>=0; i--){
+            pf[i]=maxTillNow;
+            maxTillNow = Integer.max(pf[i],arr[i]);
+        }
+
+        return pf;
+        
     }
 }
 ```
