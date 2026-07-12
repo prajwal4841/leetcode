@@ -178,7 +178,9 @@ def fetch_submission_detail(session, sub_id):
 def html_to_md(html):
     if not html:
         return "_(no problem statement returned)_"
-    s = html
+    # LeetCode HTML often contains embedded \r\n / \r — normalize to \n so output is
+    # deterministic across platforms (macOS vs Linux CI) and doesn't churn on every run.
+    s = html.replace("\r\n", "\n").replace("\r", "\n")
     s = re.sub(r"<pre>(.*?)</pre>",
                lambda m: "\n```\n" + m.group(1).strip() + "\n```\n",
                s, flags=re.DOTALL)
