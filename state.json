@@ -3993,6 +3993,94 @@
       "runtime": 6,
       "memory": 47312000,
       "submitted_at": 1783865619
+    },
+    "length-of-last-word": {
+      "frontendQuestionId": "58",
+      "title": "Length of Last Word",
+      "titleSlug": "length-of-last-word",
+      "difficulty": "Easy",
+      "acRate": 59.201704432400405,
+      "topicTags": [
+        {
+          "name": "String",
+          "slug": "string"
+        }
+      ],
+      "statement_md": "Given a string `s` consisting of words and spaces, return *the length of the **last** word in the string.*\n\nA **word** is a maximal substring consisting of non-space characters only.\n\n\u00a0\n\nExample 1:\n\n```\n**Input:** s = \"Hello World\"\n**Output:** 5\n**Explanation:** The last word is \"World\" with length 5.\n```\n\nExample 2:\n\n```\n**Input:** s = \"   fly me   to   the moon  \"\n**Output:** 4\n**Explanation:** The last word is \"moon\" with length 4.\n```\n\nExample 3:\n\n```\n**Input:** s = \"luffy is still joyboy\"\n**Output:** 6\n**Explanation:** The last word is \"joyboy\" with length 6.\n```\n\n\u00a0\n\n**Constraints:**\n\n\t- `1 <= s.length <= 10^4`\n\t- `s` consists of only English letters and spaces `' '`.\n\t- There will be at least one word in `s`.",
+      "code": "class Solution {\n    public int lengthOfLastWord(String s) {\n\n        s = s.trim();\n\n        String[] str = s.split(\" \");\n       int n = str.length;\n       System.out.println(str[n-1]);\n        \n        return str[n-1].length();\n        \n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 2,
+      "memory": 43316000,
+      "submitted_at": 1783967351
+    },
+    "max-consecutive-ones": {
+      "frontendQuestionId": "485",
+      "title": "Max Consecutive Ones",
+      "titleSlug": "max-consecutive-ones",
+      "difficulty": "Easy",
+      "acRate": 65.60489524588404,
+      "topicTags": [
+        {
+          "name": "Array",
+          "slug": "array"
+        }
+      ],
+      "statement_md": "Given a binary array `nums`, return *the maximum number of consecutive *`1`*'s in the array*.\n\n\u00a0\n\nExample 1:\n\n```\n**Input:** nums = [1,1,0,1,1,1]\n**Output:** 3\n**Explanation:** The first two digits or the last three digits are consecutive 1s. The maximum number of consecutive 1s is 3.\n```\n\nExample 2:\n\n```\n**Input:** nums = [1,0,1,1,0,1]\n**Output:** 2\n```\n\n\u00a0\n\n**Constraints:**\n\n\t- `1 <= nums.length <= 10^5`\n\t- `nums[i]` is either `0` or `1`.",
+      "code": "class Solution {\n    public int findMaxConsecutiveOnes(int[] nums) {\n\n        int n = nums.length;\n        int curr = 0;\n        int ans = 0;\n        for(int i=0; i<n; i++){\n            if(nums[i]==0){\n                ans = Integer.max(curr,ans);\n                curr = 0;\n            }else{\n                curr++;\n            }\n        }\n        ans = Integer.max(curr,ans);\n        return ans;\n        \n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 2,
+      "memory": 52608000,
+      "submitted_at": 1783970169
+    },
+    "number-of-senior-citizens": {
+      "frontendQuestionId": "2678",
+      "title": "Number of Senior Citizens",
+      "titleSlug": "number-of-senior-citizens",
+      "difficulty": "Easy",
+      "acRate": 81.2394990274178,
+      "topicTags": [
+        {
+          "name": "Array",
+          "slug": "array"
+        },
+        {
+          "name": "String",
+          "slug": "string"
+        }
+      ],
+      "statement_md": "You are given a **0-indexed** array of strings `details`. Each element of `details` provides information about a given passenger compressed into a string of length `15`. The system is such that:\n\n\t- The first ten characters consist of the phone number of passengers.\n\t- The next character denotes the gender of the person.\n\t- The following two characters are used to indicate the age of the person.\n\t- The last two characters determine the seat allotted to that person.\n\nReturn *the number of passengers who are **strictly ****more than 60 years old**.*\n\n\u00a0\n\nExample 1:\n\n```\n**Input:** details = [\"7868190130M7522\",\"5303914400F9211\",\"9273338290F4010\"]\n**Output:** 2\n**Explanation:** The passengers at indices 0, 1, and 2 have ages 75, 92, and 40. Thus, there are 2 people who are over 60 years old.\n```\n\nExample 2:\n\n```\n**Input:** details = [\"1313579440F2036\",\"2921522980M5644\"]\n**Output:** 0\n**Explanation:** None of the passengers are older than 60.\n```\n\n\u00a0\n\n**Constraints:**\n\n\t- `1 <= details.length <= 100`\n\t- `details[i].length == 15`\n\t- `details[i] consists of digits from '0' to '9'.`\n\t- `details[i][10] is either 'M' or 'F' or 'O'.`\n\t- The phone numbers and seat numbers of the passengers are distinct.",
+      "code": "class Solution {\n    public int countSeniors(String[] details) {\n\n        int n = details.length;\n        int ans =0;\n        for(int i=0; i<n; i++){\n            String s = details[i];\n            char[] ch = s.toCharArray();\n            int j = ch[11]-48;\n            int k = ch[12]-48;\n            int val = j*10 + k;\n            if(val > 60){\n                ans++;\n            }\n            // System.out.println(j);\n            //  System.out.println(k);\n            //   System.out.println(\"\\n\");\n        }\n\n        return ans;\n        \n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 1,
+      "memory": 44556000,
+      "submitted_at": 1783969851
+    },
+    "score-of-a-string": {
+      "frontendQuestionId": "3110",
+      "title": "Score of a String",
+      "titleSlug": "score-of-a-string",
+      "difficulty": "Easy",
+      "acRate": 91.361622639933,
+      "topicTags": [
+        {
+          "name": "String",
+          "slug": "string"
+        }
+      ],
+      "statement_md": "You are given a string `s`. The **score** of a string is defined as the sum of the absolute difference between the **ASCII** values of adjacent characters.\n\nReturn the **score** of* *`s`.\n\n\u00a0\n\nExample 1:\n\n**Input:** s = \"hello\"\n\n**Output:** 13\n\n**Explanation:**\n\nThe **ASCII** values of the characters in `s` are: `'h' = 104`, `'e' = 101`, `'l' = 108`, `'o' = 111`. So, the score of `s` would be `|104 - 101| + |101 - 108| + |108 - 108| + |108 - 111| = 3 + 7 + 0 + 3 = 13`.\n\nExample 2:\n\n**Input:** s = \"zaz\"\n\n**Output:** 50\n\n**Explanation:**\n\nThe **ASCII** values of the characters in `s` are: `'z' = 122`, `'a' = 97`. So, the score of `s` would be `|122 - 97| + |97 - 122| = 25 + 25 = 50`.\n\n\u00a0\n\n**Constraints:**\n\n\t- `2 <= s.length <= 100`\n\t- `s` consists only of lowercase English letters.",
+      "code": "class Solution {\n    public int scoreOfString(String s) {\n\n        char[] ch = s.toCharArray();\n\n        int n = ch.length;\n        int ans = 0;\n        for(int i=0 ; i<n-1; i++){\n            ans = ans + Math.abs(ch[i]-ch[i+1]);\n        }\n        return ans;\n        \n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 1,
+      "memory": 43244000,
+      "submitted_at": 1783966925
     }
   }
 }

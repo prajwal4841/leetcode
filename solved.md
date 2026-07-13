@@ -1,6 +1,6 @@
 # LeetCode Solved Problems — Revision Sheet
 
-**Total: 130**  |  Easy: 27  |  Medium: 90  |  Hard: 13
+**Total: 134**  |  Easy: 31  |  Medium: 90  |  Hard: 13
 
 Each problem is filed under its most specific topic tag (rarest tag it carries).
 
@@ -11,6 +11,7 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Binary Search (8)](#binary-search-8)
 - [Greedy (8)](#greedy-8)
 - [Matrix (7)](#matrix-7)
+- [String (7)](#string-7)
 - [Dynamic Programming (6)](#dynamic-programming-6)
 - [Database (5)](#database-5)
 - [Monotonic Stack (5)](#monotonic-stack-5)
@@ -19,7 +20,6 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Design (4)](#design-4)
 - [Linked List (4)](#linked-list-4)
 - [Sorting (4)](#sorting-4)
-- [String (4)](#string-4)
 - [Union-Find (4)](#union-find-4)
 - [Binary Search Tree (3)](#binary-search-tree-3)
 - [Bit Manipulation (3)](#bit-manipulation-3)
@@ -27,11 +27,11 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Math (3)](#math-3)
 - [Trie (3)](#trie-3)
 - [Two Pointers (3)](#two-pointers-3)
+- [Array (2)](#array-2)
 - [Breadth-First Search (2)](#breadth-first-search-2)
 - [Prefix Sum (2)](#prefix-sum-2)
 - [Stack (2)](#stack-2)
 - [Topological Sort (2)](#topological-sort-2)
-- [Array (1)](#array-1)
 - [Bucket Sort (1)](#bucket-sort-1)
 - [Combinatorics (1)](#combinatorics-1)
 - [Counting (1)](#counting-1)
@@ -3885,6 +3885,599 @@ class Solution {
 
 ---
 
+## String (7)
+
+### 🟢 58. Length of Last Word
+
+**Easy** · 🏷️ String · 📅 2026-07-13
+
+#### 📄 Problem
+
+Given a string `s` consisting of words and spaces, return *the length of the **last** word in the string.*
+
+A **word** is a maximal substring consisting of non-space characters only.
+
+ 
+
+Example 1:
+
+```
+**Input:** s = "Hello World"
+**Output:** 5
+**Explanation:** The last word is "World" with length 5.
+```
+
+Example 2:
+
+```
+**Input:** s = "   fly me   to   the moon  "
+**Output:** 4
+**Explanation:** The last word is "moon" with length 4.
+```
+
+Example 3:
+
+```
+**Input:** s = "luffy is still joyboy"
+**Output:** 6
+**Explanation:** The last word is "joyboy" with length 6.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= s.length <= 10^4`
+	- `s` consists of only English letters and spaces `' '`.
+	- There will be at least one word in `s`.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int lengthOfLastWord(String s) {
+
+        s = s.trim();
+
+        String[] str = s.split(" ");
+       int n = str.length;
+       System.out.println(str[n-1]);
+        
+        return str[n-1].length();
+        
+    }
+}
+```
+
+</details>
+
+### 🟢 2678. Number of Senior Citizens
+
+**Easy** · 🏷️ Array, String · 📅 2026-07-13
+
+#### 📄 Problem
+
+You are given a **0-indexed** array of strings `details`. Each element of `details` provides information about a given passenger compressed into a string of length `15`. The system is such that:
+
+	- The first ten characters consist of the phone number of passengers.
+	- The next character denotes the gender of the person.
+	- The following two characters are used to indicate the age of the person.
+	- The last two characters determine the seat allotted to that person.
+
+Return *the number of passengers who are **strictly ****more than 60 years old**.*
+
+ 
+
+Example 1:
+
+```
+**Input:** details = ["7868190130M7522","5303914400F9211","9273338290F4010"]
+**Output:** 2
+**Explanation:** The passengers at indices 0, 1, and 2 have ages 75, 92, and 40. Thus, there are 2 people who are over 60 years old.
+```
+
+Example 2:
+
+```
+**Input:** details = ["1313579440F2036","2921522980M5644"]
+**Output:** 0
+**Explanation:** None of the passengers are older than 60.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= details.length <= 100`
+	- `details[i].length == 15`
+	- `details[i] consists of digits from '0' to '9'.`
+	- `details[i][10] is either 'M' or 'F' or 'O'.`
+	- The phone numbers and seat numbers of the passengers are distinct.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int countSeniors(String[] details) {
+
+        int n = details.length;
+        int ans =0;
+        for(int i=0; i<n; i++){
+            String s = details[i];
+            char[] ch = s.toCharArray();
+            int j = ch[11]-48;
+            int k = ch[12]-48;
+            int val = j*10 + k;
+            if(val > 60){
+                ans++;
+            }
+            // System.out.println(j);
+            //  System.out.println(k);
+            //   System.out.println("\n");
+        }
+
+        return ans;
+        
+    }
+}
+```
+
+</details>
+
+### 🟢 3110. Score of a String
+
+**Easy** · 🏷️ String · 📅 2026-07-13
+
+#### 📄 Problem
+
+You are given a string `s`. The **score** of a string is defined as the sum of the absolute difference between the **ASCII** values of adjacent characters.
+
+Return the **score** of* *`s`.
+
+ 
+
+Example 1:
+
+**Input:** s = "hello"
+
+**Output:** 13
+
+**Explanation:**
+
+The **ASCII** values of the characters in `s` are: `'h' = 104`, `'e' = 101`, `'l' = 108`, `'o' = 111`. So, the score of `s` would be `|104 - 101| + |101 - 108| + |108 - 108| + |108 - 111| = 3 + 7 + 0 + 3 = 13`.
+
+Example 2:
+
+**Input:** s = "zaz"
+
+**Output:** 50
+
+**Explanation:**
+
+The **ASCII** values of the characters in `s` are: `'z' = 122`, `'a' = 97`. So, the score of `s` would be `|122 - 97| + |97 - 122| = 25 + 25 = 50`.
+
+ 
+
+**Constraints:**
+
+	- `2 <= s.length <= 100`
+	- `s` consists only of lowercase English letters.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int scoreOfString(String s) {
+
+        char[] ch = s.toCharArray();
+
+        int n = ch.length;
+        int ans = 0;
+        for(int i=0 ; i<n-1; i++){
+            ans = ans + Math.abs(ch[i]-ch[i+1]);
+        }
+        return ans;
+        
+    }
+}
+```
+
+</details>
+
+### 🟡 72. Edit Distance
+
+**Medium** · 🏷️ String, Dynamic Programming · 📅 2026-01-13
+
+#### 📄 Problem
+
+Given two strings `word1` and `word2`, return *the minimum number of operations required to convert `word1` to `word2`*.
+
+You have the following three operations permitted on a word:
+
+	- Insert a character
+	- Delete a character
+	- Replace a character
+
+ 
+
+Example 1:
+
+```
+**Input:** word1 = "horse", word2 = "ros"
+**Output:** 3
+**Explanation:** 
+horse -> rorse (replace 'h' with 'r')
+rorse -> rose (remove 'r')
+rose -> ros (remove 'e')
+```
+
+Example 2:
+
+```
+**Input:** word1 = "intention", word2 = "execution"
+**Output:** 5
+**Explanation:** 
+intention -> inention (remove 't')
+inention -> enention (replace 'i' with 'e')
+enention -> exention (replace 'n' with 'x')
+exention -> exection (replace 'n' with 'c')
+exection -> execution (insert 'u')
+```
+
+ 
+
+**Constraints:**
+
+	- `0 <= word1.length, word2.length <= 500`
+	- `word1` and `word2` consist of lowercase English letters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memo
+Key idea: When characters match, no operation needed; when they don't, choose minimum cost among insert, delete, or replace operations.
+Complexity: O(n*m) time / O(n*m) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int minDistance(String word1, String word2) {
+
+        int n = word1.length();
+        int m = word2.length();
+        int[][] dp = new int[n][m];
+        for(int i = 0;i<n;i++){
+            Arrays.fill(dp[i],-1);
+        }
+
+        return findmin(n-1,m-1,word1,word2,dp);
+
+        
+    }
+
+    private int findmin(int i, int j, String w1, String w2, int[][] dp){
+
+        if(i < 0){
+            return j+1;
+        }
+
+        if(j < 0){
+           return i+1;
+        }
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+        
+
+        if(w1.charAt(i) == w2.charAt(j)){
+            return dp[i][j]=findmin(i-1,j-1,w1,w2,dp);
+        }
+        int replace = 1 + findmin(i-1,j-1,w1,w2,dp);
+        int remove = 1 + findmin(i-1,j,w1,w2,dp);
+        int insert = 1 + findmin(i,j-1,w1,w2,dp);
+        return dp[i][j]=Integer.min(insert, Integer.min(replace,remove));
+
+    }
+}
+```
+
+</details>
+
+### 🟡 1143. Longest Common Subsequence
+
+**Medium** · 🏷️ String, Dynamic Programming · 📅 2026-01-06
+
+#### 📄 Problem
+
+Given two strings `text1` and `text2`, return *the length of their longest **common subsequence**. *If there is no **common subsequence**, return `0`.
+
+A **subsequence** of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
+
+	- For example, `"ace"` is a subsequence of `"abcde"`.
+
+A **common subsequence** of two strings is a subsequence that is common to both strings.
+
+ 
+
+Example 1:
+
+```
+**Input:** text1 = "abcde", text2 = "ace" 
+**Output:** 3  
+**Explanation:** The longest common subsequence is "ace" and its length is 3.
+```
+
+Example 2:
+
+```
+**Input:** text1 = "abc", text2 = "abc"
+**Output:** 3
+**Explanation:** The longest common subsequence is "abc" and its length is 3.
+```
+
+Example 3:
+
+```
+**Input:** text1 = "abc", text2 = "def"
+**Output:** 0
+**Explanation:** There is no such common subsequence, so the result is 0.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= text1.length, text2.length <= 1000`
+	- `text1` and `text2` consist of only lowercase English characters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memoization
+Key idea: Matching characters extend LCS by 1; mismatches require excluding one—recursively try both and take maximum.
+Complexity: O(n*m) time / O(n*m) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int n = text1.length();
+        int m = text2.length();
+        int[][] dp = new int[n+1][m+1];
+        for(int i =0;i<n;i++){
+            Arrays.fill(dp[i],-1);
+        }
+        return findsubseq(n-1,m-1,text1,text2,dp);
+        
+    }
+
+    private int findsubseq(int i ,  int j , String text1, String text2,int[][] dp){
+
+        if(i<0 || j<0){
+            return 0;
+        }
+
+        if(dp[i][j]!=-1){
+            return dp[i][j];
+        }
+        if(text1.charAt(i) == text2.charAt(j)){
+            return dp[i][j]= 1 + findsubseq(i-1,j-1,text1,text2, dp);
+        }
+
+        return dp[i][j]=Integer.max(findsubseq(i-1,j,text1,text2,dp),findsubseq(i,j-1,text1,text2,dp));
+    }
+}
+```
+
+</details>
+
+### 🟡 3163. String Compression III
+
+**Medium** · 🏷️ String · 📅 2024-09-21
+
+#### 📄 Problem
+
+Given a string `word`, compress it using the following algorithm:
+
+	- Begin with an empty string `comp`. While `word` is **not** empty, use the following operation:
+
+	
+
+		Remove a maximum length prefix of `word` made of a *single character* `c` repeating **at most** 9 times.
+		- Append the length of the prefix followed by `c` to `comp`.
+	
+
+	
+
+Return the string `comp`.
+
+ 
+
+Example 1:
+
+**Input:** word = "abcde"
+
+**Output:** "1a1b1c1d1e"
+
+**Explanation:**
+
+Initially, `comp = ""`. Apply the operation 5 times, choosing `"a"`, `"b"`, `"c"`, `"d"`, and `"e"` as the prefix in each operation.
+
+For each prefix, append `"1"` followed by the character to `comp`.
+
+Example 2:
+
+**Input:** word = "aaaaaaaaaaaaaabb"
+
+**Output:** "9a5a2b"
+
+**Explanation:**
+
+Initially, `comp = ""`. Apply the operation 3 times, choosing `"aaaaaaaaa"`, `"aaaaa"`, and `"bb"` as the prefix in each operation.
+
+	- For prefix `"aaaaaaaaa"`, append `"9"` followed by `"a"` to `comp`.
+	- For prefix `"aaaaa"`, append `"5"` followed by `"a"` to `comp`.
+	- For prefix `"bb"`, append `"2"` followed by `"b"` to `comp`.
+
+ 
+
+**Constraints:**
+
+	- `1 <= word.length <= 2 * 10^5`
+	- `word` consists only of lowercase English letters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Single pass grouping
+Key idea: Groups of identical characters are independent; emit each immediately upon character change or reaching 9, solving in one pass.
+Complexity: O(n) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public String compressedString(String word) {
+        String comp = "";
+        int len = word.length();
+        int j =1;
+        if(len == 1){
+            return 1+word;
+        }
+        for(int i=0;i<len-1;i++){
+            if(word.charAt(i) == word.charAt(i+1) && j<9){
+                j++;
+            }
+            else {
+                comp = comp+j+word.charAt(i);
+                j=1;
+            }
+        }
+        if(word.charAt(len-1) == word.charAt(len-2)){
+            comp = comp+j+word.charAt(len-1);
+        }else{
+            comp = comp+1+word.charAt(len-1);
+        }
+        return comp;
+        
+    }
+}
+```
+
+</details>
+
+### 🔴 115. Distinct Subsequences
+
+**Hard** · 🏷️ String, Dynamic Programming · 📅 2026-01-11
+
+#### 📄 Problem
+
+Given two strings s and t, return *the number of distinct* ***subsequences**** of *s* which equals *t.
+
+The test cases are generated so that the answer fits on a 32-bit signed integer.
+
+ 
+
+Example 1:
+
+```
+**Input:** s = "rabbbit", t = "rabbit"
+**Output:** 3
+**Explanation:**
+As shown below, there are 3 ways you can generate "rabbit" from s.
+`**rabb**b**it**`
+`**ra**b**bbit**`
+`**rab**b**bit**`
+```
+
+Example 2:
+
+```
+**Input:** s = "babgbag", t = "bag"
+**Output:** 5
+**Explanation:**
+As shown below, there are 5 ways you can generate "bag" from s.
+`**ba**b**g**bag`
+`**ba**bgba**g**`
+`**b**abgb**ag**`
+`ba**b**gb**ag**`
+`babg**bag**`
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= s.length, t.length <= 1000`
+	- `s` and `t` consist of English letters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memoization
+Key idea: For each position, if characters match, count both using and skipping; if not, skip.
+Complexity: O(n*m) time / O(n*m) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int numDistinct(String s, String t) {
+
+        int n = s.length();
+        int m = t.length();
+
+        int[][] dp = new int[n][m];
+        for(int i =0;i<n;i++){
+            Arrays.fill(dp[i],-1);
+        }
+        
+        return findcount(n-1,m-1,s,t,dp);
+    }
+
+    private int findcount(int i, int j , String s, String t,int[][] dp){
+
+        if(j<0){
+            return 1;
+        }
+        if(i<0){
+            return 0;
+        }
+        if(dp[i][j]!=-1){
+            return dp[i][j];
+        }
+
+        if(s.charAt(i) == t.charAt(j)){
+            return dp[i][j]=findcount(i-1,j-1,s,t,dp) + findcount(i-1,j,s,t,dp);
+
+        }
+        return dp[i][j]=findcount(i-1,j,s,t,dp);
+    }
+}
+```
+
+</details>
+
+---
+
 ## Dynamic Programming (6)
 
 ### 🟢 121. Best Time to Buy and Sell Stock
@@ -7551,390 +8144,6 @@ class Solution {
 
 ---
 
-## String (4)
-
-### 🟡 72. Edit Distance
-
-**Medium** · 🏷️ String, Dynamic Programming · 📅 2026-01-13
-
-#### 📄 Problem
-
-Given two strings `word1` and `word2`, return *the minimum number of operations required to convert `word1` to `word2`*.
-
-You have the following three operations permitted on a word:
-
-	- Insert a character
-	- Delete a character
-	- Replace a character
-
- 
-
-Example 1:
-
-```
-**Input:** word1 = "horse", word2 = "ros"
-**Output:** 3
-**Explanation:** 
-horse -> rorse (replace 'h' with 'r')
-rorse -> rose (remove 'r')
-rose -> ros (remove 'e')
-```
-
-Example 2:
-
-```
-**Input:** word1 = "intention", word2 = "execution"
-**Output:** 5
-**Explanation:** 
-intention -> inention (remove 't')
-inention -> enention (replace 'i' with 'e')
-enention -> exention (replace 'n' with 'x')
-exention -> exection (replace 'n' with 'c')
-exection -> execution (insert 'u')
-```
-
- 
-
-**Constraints:**
-
-	- `0 <= word1.length, word2.length <= 500`
-	- `word1` and `word2` consist of lowercase English letters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memo
-Key idea: When characters match, no operation needed; when they don't, choose minimum cost among insert, delete, or replace operations.
-Complexity: O(n*m) time / O(n*m) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int minDistance(String word1, String word2) {
-
-        int n = word1.length();
-        int m = word2.length();
-        int[][] dp = new int[n][m];
-        for(int i = 0;i<n;i++){
-            Arrays.fill(dp[i],-1);
-        }
-
-        return findmin(n-1,m-1,word1,word2,dp);
-
-        
-    }
-
-    private int findmin(int i, int j, String w1, String w2, int[][] dp){
-
-        if(i < 0){
-            return j+1;
-        }
-
-        if(j < 0){
-           return i+1;
-        }
-        if(dp[i][j] != -1){
-            return dp[i][j];
-        }
-        
-
-        if(w1.charAt(i) == w2.charAt(j)){
-            return dp[i][j]=findmin(i-1,j-1,w1,w2,dp);
-        }
-        int replace = 1 + findmin(i-1,j-1,w1,w2,dp);
-        int remove = 1 + findmin(i-1,j,w1,w2,dp);
-        int insert = 1 + findmin(i,j-1,w1,w2,dp);
-        return dp[i][j]=Integer.min(insert, Integer.min(replace,remove));
-
-    }
-}
-```
-
-</details>
-
-### 🟡 1143. Longest Common Subsequence
-
-**Medium** · 🏷️ String, Dynamic Programming · 📅 2026-01-06
-
-#### 📄 Problem
-
-Given two strings `text1` and `text2`, return *the length of their longest **common subsequence**. *If there is no **common subsequence**, return `0`.
-
-A **subsequence** of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
-
-	- For example, `"ace"` is a subsequence of `"abcde"`.
-
-A **common subsequence** of two strings is a subsequence that is common to both strings.
-
- 
-
-Example 1:
-
-```
-**Input:** text1 = "abcde", text2 = "ace" 
-**Output:** 3  
-**Explanation:** The longest common subsequence is "ace" and its length is 3.
-```
-
-Example 2:
-
-```
-**Input:** text1 = "abc", text2 = "abc"
-**Output:** 3
-**Explanation:** The longest common subsequence is "abc" and its length is 3.
-```
-
-Example 3:
-
-```
-**Input:** text1 = "abc", text2 = "def"
-**Output:** 0
-**Explanation:** There is no such common subsequence, so the result is 0.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= text1.length, text2.length <= 1000`
-	- `text1` and `text2` consist of only lowercase English characters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memoization
-Key idea: Matching characters extend LCS by 1; mismatches require excluding one—recursively try both and take maximum.
-Complexity: O(n*m) time / O(n*m) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int longestCommonSubsequence(String text1, String text2) {
-        int n = text1.length();
-        int m = text2.length();
-        int[][] dp = new int[n+1][m+1];
-        for(int i =0;i<n;i++){
-            Arrays.fill(dp[i],-1);
-        }
-        return findsubseq(n-1,m-1,text1,text2,dp);
-        
-    }
-
-    private int findsubseq(int i ,  int j , String text1, String text2,int[][] dp){
-
-        if(i<0 || j<0){
-            return 0;
-        }
-
-        if(dp[i][j]!=-1){
-            return dp[i][j];
-        }
-        if(text1.charAt(i) == text2.charAt(j)){
-            return dp[i][j]= 1 + findsubseq(i-1,j-1,text1,text2, dp);
-        }
-
-        return dp[i][j]=Integer.max(findsubseq(i-1,j,text1,text2,dp),findsubseq(i,j-1,text1,text2,dp));
-    }
-}
-```
-
-</details>
-
-### 🟡 3163. String Compression III
-
-**Medium** · 🏷️ String · 📅 2024-09-21
-
-#### 📄 Problem
-
-Given a string `word`, compress it using the following algorithm:
-
-	- Begin with an empty string `comp`. While `word` is **not** empty, use the following operation:
-
-	
-
-		Remove a maximum length prefix of `word` made of a *single character* `c` repeating **at most** 9 times.
-		- Append the length of the prefix followed by `c` to `comp`.
-	
-
-	
-
-Return the string `comp`.
-
- 
-
-Example 1:
-
-**Input:** word = "abcde"
-
-**Output:** "1a1b1c1d1e"
-
-**Explanation:**
-
-Initially, `comp = ""`. Apply the operation 5 times, choosing `"a"`, `"b"`, `"c"`, `"d"`, and `"e"` as the prefix in each operation.
-
-For each prefix, append `"1"` followed by the character to `comp`.
-
-Example 2:
-
-**Input:** word = "aaaaaaaaaaaaaabb"
-
-**Output:** "9a5a2b"
-
-**Explanation:**
-
-Initially, `comp = ""`. Apply the operation 3 times, choosing `"aaaaaaaaa"`, `"aaaaa"`, and `"bb"` as the prefix in each operation.
-
-	- For prefix `"aaaaaaaaa"`, append `"9"` followed by `"a"` to `comp`.
-	- For prefix `"aaaaa"`, append `"5"` followed by `"a"` to `comp`.
-	- For prefix `"bb"`, append `"2"` followed by `"b"` to `comp`.
-
- 
-
-**Constraints:**
-
-	- `1 <= word.length <= 2 * 10^5`
-	- `word` consists only of lowercase English letters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Single pass grouping
-Key idea: Groups of identical characters are independent; emit each immediately upon character change or reaching 9, solving in one pass.
-Complexity: O(n) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public String compressedString(String word) {
-        String comp = "";
-        int len = word.length();
-        int j =1;
-        if(len == 1){
-            return 1+word;
-        }
-        for(int i=0;i<len-1;i++){
-            if(word.charAt(i) == word.charAt(i+1) && j<9){
-                j++;
-            }
-            else {
-                comp = comp+j+word.charAt(i);
-                j=1;
-            }
-        }
-        if(word.charAt(len-1) == word.charAt(len-2)){
-            comp = comp+j+word.charAt(len-1);
-        }else{
-            comp = comp+1+word.charAt(len-1);
-        }
-        return comp;
-        
-    }
-}
-```
-
-</details>
-
-### 🔴 115. Distinct Subsequences
-
-**Hard** · 🏷️ String, Dynamic Programming · 📅 2026-01-11
-
-#### 📄 Problem
-
-Given two strings s and t, return *the number of distinct* ***subsequences**** of *s* which equals *t.
-
-The test cases are generated so that the answer fits on a 32-bit signed integer.
-
- 
-
-Example 1:
-
-```
-**Input:** s = "rabbbit", t = "rabbit"
-**Output:** 3
-**Explanation:**
-As shown below, there are 3 ways you can generate "rabbit" from s.
-`**rabb**b**it**`
-`**ra**b**bbit**`
-`**rab**b**bit**`
-```
-
-Example 2:
-
-```
-**Input:** s = "babgbag", t = "bag"
-**Output:** 5
-**Explanation:**
-As shown below, there are 5 ways you can generate "bag" from s.
-`**ba**b**g**bag`
-`**ba**bgba**g**`
-`**b**abgb**ag**`
-`ba**b**gb**ag**`
-`babg**bag**`
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= s.length, t.length <= 1000`
-	- `s` and `t` consist of English letters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memoization
-Key idea: For each position, if characters match, count both using and skipping; if not, skip.
-Complexity: O(n*m) time / O(n*m) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int numDistinct(String s, String t) {
-
-        int n = s.length();
-        int m = t.length();
-
-        int[][] dp = new int[n][m];
-        for(int i =0;i<n;i++){
-            Arrays.fill(dp[i],-1);
-        }
-        
-        return findcount(n-1,m-1,s,t,dp);
-    }
-
-    private int findcount(int i, int j , String s, String t,int[][] dp){
-
-        if(j<0){
-            return 1;
-        }
-        if(i<0){
-            return 0;
-        }
-        if(dp[i][j]!=-1){
-            return dp[i][j];
-        }
-
-        if(s.charAt(i) == t.charAt(j)){
-            return dp[i][j]=findcount(i-1,j-1,s,t,dp) + findcount(i-1,j,s,t,dp);
-
-        }
-        return dp[i][j]=findcount(i-1,j,s,t,dp);
-    }
-}
-```
-
-</details>
-
----
-
 ## Union-Find (4)
 
 ### 🟡 128. Longest Consecutive Sequence
@@ -10091,6 +10300,145 @@ class Solution {
 
 ---
 
+## Array (2)
+
+### 🟢 485. Max Consecutive Ones
+
+**Easy** · 🏷️ Array · 📅 2026-07-13
+
+#### 📄 Problem
+
+Given a binary array `nums`, return *the maximum number of consecutive *`1`*'s in the array*.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [1,1,0,1,1,1]
+**Output:** 3
+**Explanation:** The first two digits or the last three digits are consecutive 1s. The maximum number of consecutive 1s is 3.
+```
+
+Example 2:
+
+```
+**Input:** nums = [1,0,1,1,0,1]
+**Output:** 2
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= nums.length <= 10^5`
+	- `nums[i]` is either `0` or `1`.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int findMaxConsecutiveOnes(int[] nums) {
+
+        int n = nums.length;
+        int curr = 0;
+        int ans = 0;
+        for(int i=0; i<n; i++){
+            if(nums[i]==0){
+                ans = Integer.max(curr,ans);
+                curr = 0;
+            }else{
+                curr++;
+            }
+        }
+        ans = Integer.max(curr,ans);
+        return ans;
+        
+    }
+}
+```
+
+</details>
+
+### 🟢 1299. Replace Elements with Greatest Element on Right Side
+
+**Easy** · 🏷️ Array · 📅 2026-07-12
+
+#### 📄 Problem
+
+Given an array `arr`, replace every element in that array with the greatest element among the elements to its right, and replace the last element with `-1`.
+
+After doing so, return the array.
+
+ 
+
+Example 1:
+
+```
+**Input:** arr = [17,18,5,4,6,1]
+**Output:** [18,6,6,6,1,-1]
+**Explanation:** 
+- index 0 --> the greatest element to the right of index 0 is index 1 (18).
+- index 1 --> the greatest element to the right of index 1 is index 4 (6).
+- index 2 --> the greatest element to the right of index 2 is index 4 (6).
+- index 3 --> the greatest element to the right of index 3 is index 4 (6).
+- index 4 --> the greatest element to the right of index 4 is index 5 (1).
+- index 5 --> there are no elements to the right of index 5, so we put -1.
+```
+
+Example 2:
+
+```
+**Input:** arr = [400]
+**Output:** [-1]
+**Explanation:** There are no elements to the right of index 0.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= arr.length <= 10^4`
+	- `1 <= arr[i] <= 10^5`
+
+#### 💡 Revision note
+
+```text
+Pattern: Right-to-left single pass
+Key idea: Traversing backwards, we store the maximum of all right elements at each position, updating max as we go.
+Complexity: O(n) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int[] replaceElements(int[] arr) {
+        int n = arr.length;
+
+        int[] pf = new int[n];
+        pf[n-1]=-1;
+        int maxTillNow = Integer.max(pf[n-1],arr[n-1]);
+
+        for(int i = n-2; i>=0; i--){
+            pf[i]=maxTillNow;
+            maxTillNow = Integer.max(pf[i],arr[i]);
+        }
+
+        return pf;
+        
+    }
+}
+```
+
+</details>
+
+---
+
 ## Breadth-First Search (2)
 
 ### 🟡 322. Coin Change
@@ -10853,83 +11201,6 @@ class Solution {
         vis[i]=2;
         s.push(i);
         return true;
-    }
-}
-```
-
-</details>
-
----
-
-## Array (1)
-
-### 🟢 1299. Replace Elements with Greatest Element on Right Side
-
-**Easy** · 🏷️ Array · 📅 2026-07-12
-
-#### 📄 Problem
-
-Given an array `arr`, replace every element in that array with the greatest element among the elements to its right, and replace the last element with `-1`.
-
-After doing so, return the array.
-
- 
-
-Example 1:
-
-```
-**Input:** arr = [17,18,5,4,6,1]
-**Output:** [18,6,6,6,1,-1]
-**Explanation:** 
-- index 0 --> the greatest element to the right of index 0 is index 1 (18).
-- index 1 --> the greatest element to the right of index 1 is index 4 (6).
-- index 2 --> the greatest element to the right of index 2 is index 4 (6).
-- index 3 --> the greatest element to the right of index 3 is index 4 (6).
-- index 4 --> the greatest element to the right of index 4 is index 5 (1).
-- index 5 --> there are no elements to the right of index 5, so we put -1.
-```
-
-Example 2:
-
-```
-**Input:** arr = [400]
-**Output:** [-1]
-**Explanation:** There are no elements to the right of index 0.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= arr.length <= 10^4`
-	- `1 <= arr[i] <= 10^5`
-
-#### 💡 Revision note
-
-```text
-Pattern: Right-to-left single pass
-Key idea: Traversing backwards, we store the maximum of all right elements at each position, updating max as we go.
-Complexity: O(n) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int[] replaceElements(int[] arr) {
-        int n = arr.length;
-
-        int[] pf = new int[n];
-        pf[n-1]=-1;
-        int maxTillNow = Integer.max(pf[n-1],arr[n-1]);
-
-        for(int i = n-2; i>=0; i--){
-            pf[i]=maxTillNow;
-            maxTillNow = Integer.max(pf[i],arr[i]);
-        }
-
-        return pf;
-        
     }
 }
 ```
