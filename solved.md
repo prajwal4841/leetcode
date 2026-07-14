@@ -1,18 +1,17 @@
 # LeetCode Solved Problems — Revision Sheet
 
-**Total: 134**  |  Easy: 31  |  Medium: 90  |  Hard: 13
+**Total: 135**  |  Easy: 32  |  Medium: 90  |  Hard: 13
 
 Each problem is filed under its most specific topic tag (rarest tag it carries).
 
 **Jump to a topic:**
 
 - [Tree (10)](#tree-10)
+- [Dynamic Programming (9)](#dynamic-programming-9)
 - [Backtracking (8)](#backtracking-8)
 - [Binary Search (8)](#binary-search-8)
 - [Greedy (8)](#greedy-8)
 - [Matrix (7)](#matrix-7)
-- [String (7)](#string-7)
-- [Dynamic Programming (6)](#dynamic-programming-6)
 - [Database (5)](#database-5)
 - [Monotonic Stack (5)](#monotonic-stack-5)
 - [Recursion (5)](#recursion-5)
@@ -20,12 +19,13 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Design (4)](#design-4)
 - [Linked List (4)](#linked-list-4)
 - [Sorting (4)](#sorting-4)
+- [String (4)](#string-4)
+- [Trie (4)](#trie-4)
 - [Union-Find (4)](#union-find-4)
 - [Binary Search Tree (3)](#binary-search-tree-3)
 - [Bit Manipulation (3)](#bit-manipulation-3)
 - [Divide and Conquer (3)](#divide-and-conquer-3)
 - [Math (3)](#math-3)
-- [Trie (3)](#trie-3)
 - [Two Pointers (3)](#two-pointers-3)
 - [Array (2)](#array-2)
 - [Breadth-First Search (2)](#breadth-first-search-2)
@@ -1032,6 +1032,824 @@ class Solution {
         return root.val + Integer.max(left,right);
 
 
+    }
+}
+```
+
+</details>
+
+---
+
+## Dynamic Programming (9)
+
+### 🟢 121. Best Time to Buy and Sell Stock
+
+**Easy** · 🏷️ Array, Dynamic Programming · 📅 2026-07-11
+
+#### 📄 Problem
+
+You are given an array `prices` where `prices[i]` is the price of a given stock on the `i^th` day.
+
+You want to maximize your profit by choosing a **single day** to buy one stock and choosing a **different day in the future** to sell that stock.
+
+Return *the maximum profit you can achieve from this transaction*. If you cannot achieve any profit, return `0`.
+
+ 
+
+Example 1:
+
+```
+**Input:** prices = [7,1,5,3,6,4]
+**Output:** 5
+**Explanation:** Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+```
+
+Example 2:
+
+```
+**Input:** prices = [7,6,4,3,1]
+**Output:** 0
+**Explanation:** In this case, no transactions are done and the max profit = 0.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= prices.length <= 10^5`
+	- `0 <= prices[i] <= 10^4`
+
+#### 💡 Revision note
+
+```text
+Pattern: Single-pass min tracking
+Key idea: Maximum profit at each price is current price minus the minimum price before it.
+Complexity: O(n) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int maxProfit(int[] arr) {
+
+        int n = arr.length;
+        int min = arr[0];
+        int ans =0;
+
+        for(int i = 1;i<n;i++){
+            min = Integer.min(arr[i],min);
+            ans = Integer.max(ans, arr[i]-min);
+        }
+
+        return ans;
+        
+
+    }
+
+    
+
+  
+}
+```
+
+</details>
+
+### 🟡 72. Edit Distance
+
+**Medium** · 🏷️ String, Dynamic Programming · 📅 2026-01-13
+
+#### 📄 Problem
+
+Given two strings `word1` and `word2`, return *the minimum number of operations required to convert `word1` to `word2`*.
+
+You have the following three operations permitted on a word:
+
+	- Insert a character
+	- Delete a character
+	- Replace a character
+
+ 
+
+Example 1:
+
+```
+**Input:** word1 = "horse", word2 = "ros"
+**Output:** 3
+**Explanation:** 
+horse -> rorse (replace 'h' with 'r')
+rorse -> rose (remove 'r')
+rose -> ros (remove 'e')
+```
+
+Example 2:
+
+```
+**Input:** word1 = "intention", word2 = "execution"
+**Output:** 5
+**Explanation:** 
+intention -> inention (remove 't')
+inention -> enention (replace 'i' with 'e')
+enention -> exention (replace 'n' with 'x')
+exention -> exection (replace 'n' with 'c')
+exection -> execution (insert 'u')
+```
+
+ 
+
+**Constraints:**
+
+	- `0 <= word1.length, word2.length <= 500`
+	- `word1` and `word2` consist of lowercase English letters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memo
+Key idea: When characters match, no operation needed; when they don't, choose minimum cost among insert, delete, or replace operations.
+Complexity: O(n*m) time / O(n*m) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int minDistance(String word1, String word2) {
+
+        int n = word1.length();
+        int m = word2.length();
+        int[][] dp = new int[n][m];
+        for(int i = 0;i<n;i++){
+            Arrays.fill(dp[i],-1);
+        }
+
+        return findmin(n-1,m-1,word1,word2,dp);
+
+        
+    }
+
+    private int findmin(int i, int j, String w1, String w2, int[][] dp){
+
+        if(i < 0){
+            return j+1;
+        }
+
+        if(j < 0){
+           return i+1;
+        }
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+        
+
+        if(w1.charAt(i) == w2.charAt(j)){
+            return dp[i][j]=findmin(i-1,j-1,w1,w2,dp);
+        }
+        int replace = 1 + findmin(i-1,j-1,w1,w2,dp);
+        int remove = 1 + findmin(i-1,j,w1,w2,dp);
+        int insert = 1 + findmin(i,j-1,w1,w2,dp);
+        return dp[i][j]=Integer.min(insert, Integer.min(replace,remove));
+
+    }
+}
+```
+
+</details>
+
+### 🟡 120. Triangle
+
+**Medium** · 🏷️ Array, Dynamic Programming · 📅 2025-12-30
+
+#### 📄 Problem
+
+Given a `triangle` array, return *the minimum path sum from top to bottom*.
+
+For each step, you may move to an adjacent number of the row below. More formally, if you are on index `i` on the current row, you may move to either index `i` or index `i + 1` on the next row.
+
+ 
+
+Example 1:
+
+```
+**Input:** triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+**Output:** 11
+**Explanation:** The triangle looks like:
+   2
+  3 4
+ 6 5 7
+4 1 8 3
+The minimum path sum from top to bottom is 2 + 3 + 5 + 1 = 11 (underlined above).
+```
+
+Example 2:
+
+```
+**Input:** triangle = [[-10]]
+**Output:** -10
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= triangle.length <= 200`
+	- `triangle[0].length == 1`
+	- `triangle[i].length == triangle[i - 1].length + 1`
+	- `-10^4 <= triangle[i][j] <= 10^4`
+
+ 
+
+**Follow up:** Could you do this using only `O(n)` extra space, where `n` is the total number of rows in the triangle?
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memoization
+Key idea: At each position, minimum path equals current value plus the minimum of two paths below; memoize to avoid recomputation.
+Complexity: O(n²) time / O(n²) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int n = triangle.size();
+        int m = triangle.get(n-1).size();
+        int[][] dp = new int[n][m];
+        for(int i =0;i<n;i++){
+            Arrays.fill(dp[i],(int)1e9);
+        }
+        return findmin(0,0,triangle.size(),triangle,dp);
+        
+    }
+
+    private int findmin(int i, int j ,int n, List<List<Integer>> triangle,int[][] dp){
+        if(i == n-1){
+            return triangle.get(i).get(j);
+        }
+        if(dp[i][j]!=(int)1e9){
+            return dp[i][j];
+        }
+
+        int d = triangle.get(i).get(j) + findmin(i+1,j,n,triangle,dp);
+        int da = triangle.get(i).get(j) + findmin(i+1,j+1,n,triangle,dp);
+        return dp[i][j]=Integer.min(d,da);
+    }
+}
+```
+
+</details>
+
+### 🟡 152. Maximum Product Subarray
+
+**Medium** · 🏷️ Array, Dynamic Programming · 📅 2026-02-02
+
+#### 📄 Problem
+
+Given an integer array `nums`, find a subarray that has the largest product, and return *the product*.
+
+The test cases are generated so that the answer will fit in a **32-bit** integer.
+
+**Note** that the product of an array with a single element is the value of that element.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [2,3,-2,4]
+**Output:** 6
+**Explanation:** [2,3] has the largest product 6.
+```
+
+Example 2:
+
+```
+**Input:** nums = [-2,0,-1]
+**Output:** 0
+**Explanation:** The result cannot be 2, because [-2,-1] is not a subarray.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= nums.length <= 2 * 10^4`
+	- `-10 <= nums[i] <= 10`
+	- The product of any subarray of `nums` is **guaranteed** to fit in a **32-bit** integer.
+
+#### 💡 Revision note
+
+```text
+Pattern: Prefix-Suffix Product Scan
+Key idea: Products from both left and right cover all subarrays; resetting at zeros handles negative-caused sign flips naturally.
+Complexity: O(n) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int maxProduct(int[] nums) {
+        int n = nums.length;
+        // if(n==1){
+        //     return nums[0];
+        // }
+        return findmax(nums.length,nums);
+        
+    }
+
+    private int findmax(int n , int[] arr){
+
+        int pre = 1;
+        int suf = 1;
+        int ans = Integer.MIN_VALUE;
+
+        for(int i=0; i<n; i++){
+            if(pre == 0){
+                pre = 1;
+            }
+            if(suf == 0){
+                suf = 1;
+            }
+            pre = pre * arr[i];
+            suf = suf * arr[n-i-1];
+            
+            ans = Integer.max(ans,Integer.max(pre,suf));
+            System.out.println(ans);
+        }
+
+        return ans;
+    }
+}
+```
+
+</details>
+
+### 🟡 198. House Robber
+
+**Medium** · 🏷️ Array, Dynamic Programming · 📅 2025-12-25
+
+#### 📄 Problem
+
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and **it will automatically contact the police if two adjacent houses were broken into on the same night**.
+
+Given an integer array `nums` representing the amount of money of each house, return *the maximum amount of money you can rob tonight **without alerting the police***.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [1,2,3,1]
+**Output:** 4
+**Explanation:** Rob house 1 (money = 1) and then rob house 3 (money = 3).
+Total amount you can rob = 1 + 3 = 4.
+```
+
+Example 2:
+
+```
+**Input:** nums = [2,7,9,3,1]
+**Output:** 12
+**Explanation:** Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
+Total amount you can rob = 2 + 9 + 1 = 12.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= nums.length <= 100`
+	- `0 <= nums[i] <= 400`
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memoization
+Key idea: Two choices per house—rob (add to i-2 max) or skip (keep i-1 max)—pick maximum; memoize subproblems.
+Complexity: O(n) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int rob(int[] nums) {
+
+        int n = nums.length;
+        if(n==1){
+            return nums[0];
+        }
+        int[] dp = new int[n];
+        Arrays.fill(dp,-1);
+        getmax(n-1,dp,nums);
+        return dp[n-1];
+        
+    }
+
+    private int getmax(int i, int[] dp, int[] arr){
+
+        if(i == 0 ){
+            return arr[i];
+        }
+        if(i<0){
+            return 0;
+        }
+
+        if(dp[i]!=-1){
+            return dp[i];
+        }
+
+        int pick = getmax(i-2, dp, arr) + arr[i];
+
+        int notpick = getmax(i-1,dp,arr);
+
+        return dp[i]=Integer.max(pick,notpick);
+    }
+}
+```
+
+</details>
+
+### 🟡 213. House Robber II
+
+**Medium** · 🏷️ Array, Dynamic Programming · 📅 2026-01-18
+
+#### 📄 Problem
+
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are **arranged in a circle.** That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and **it will automatically contact the police if two adjacent houses were broken into on the same night**.
+
+Given an integer array `nums` representing the amount of money of each house, return *the maximum amount of money you can rob tonight **without alerting the police***.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [2,3,2]
+**Output:** 3
+**Explanation:** You cannot rob house 1 (money = 2) and then rob house 3 (money = 2), because they are adjacent houses.
+```
+
+Example 2:
+
+```
+**Input:** nums = [1,2,3,1]
+**Output:** 4
+**Explanation:** Rob house 1 (money = 1) and then rob house 3 (money = 3).
+Total amount you can rob = 1 + 3 = 4.
+```
+
+Example 3:
+
+```
+**Input:** nums = [1,2,3]
+**Output:** 3
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= nums.length <= 100`
+	- `0 <= nums[i] <= 1000`
+
+#### 💡 Revision note
+
+```text
+Pattern: Case-split DP
+Key idea: Circular constraint prevents robbing both endpoints; solve two linear subproblems (exclude first or last) and take maximum.
+Complexity: O(n) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int rob(int[] nums) {
+        int n = nums.length;
+        if(n==1){
+            return nums[0];
+        }
+        int[] arr1 = new int[n-1];
+        int[] arr2 = new int[n-1];
+
+        for(int i = 0; i<n-1; i++){
+           arr1[i]=nums[i];
+        }
+        for(int i = 1;i<n;i++){
+            arr2[i-1]=nums[i];
+        }
+        int[] dp1 = new int[n-1];
+        int[] dp2 = new int[n-1];
+
+        Arrays.fill(dp1,-1);
+        Arrays.fill(dp2,-1);
+
+        int m1 =  findmax(n-2,arr1,dp1);
+        int m2 =  findmax(n-2,arr2,dp2);
+        return Integer.max(m1,m2);
+        
+
+        
+    }
+
+    private int findmax(int i, int[] arr,int[] dp){
+        if(i == 0){
+           return arr[0];
+        }
+        if(i<0){
+            return 0;
+        }
+        if(dp[i]!=-1){
+            return dp[i];
+        }
+        int nonpick = findmax(i-1,arr,dp);
+        int pick = arr[i] + findmax(i-2,arr,dp);
+        
+        return  dp[i]=Integer.max(pick,nonpick);
+    }
+
+}
+```
+
+</details>
+
+### 🟡 518. Coin Change II
+
+**Medium** · 🏷️ Array, Dynamic Programming · 📅 2026-01-05
+
+#### 📄 Problem
+
+You are given an integer array `coins` representing coins of different denominations and an integer `amount` representing a total amount of money.
+
+Return *the number of combinations that make up that amount*. If that amount of money cannot be made up by any combination of the coins, return `0`.
+
+You may assume that you have an infinite number of each kind of coin.
+
+The **final** answer is **guaranteed** to fit into a signed **32-bit** integer.
+
+ 
+
+Example 1:
+
+```
+**Input:** amount = 5, coins = [1,2,5]
+**Output:** 4
+**Explanation:** there are four ways to make up the amount:
+5=5
+5=2+2+1
+5=2+1+1+1
+5=1+1+1+1+1
+```
+
+Example 2:
+
+```
+**Input:** amount = 3, coins = [2]
+**Output:** 0
+**Explanation:** the amount of 3 cannot be made up just with coins of 2.
+```
+
+Example 3:
+
+```
+**Input:** amount = 10, coins = [10]
+**Output:** 1
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= coins.length <= 300`
+	- `1 <= coins[i] <= 5000`
+	- All the values of `coins` are **unique**.
+	- `0 <= amount <= 5000`
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memo
+Key idea: Iterate coins sequentially, keeping index fixed when picking to allow reuse and count combinations not permutations.
+Complexity: O(n × amount) time / O(n × amount) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int change( int amount,int[] coins) {
+
+        int n = coins.length;
+        int[][] dp = new int[n][amount+1];
+        for(int i =0;i<n;i++){
+            Arrays.fill(dp[i],-1);
+        }
+        return findmin(n-1,coins,amount,dp);
+        
+    }
+
+    private int findmin(int i, int[] arr, int t,int[][] dp){
+
+        if(i == 0){
+            return (t % arr[i]) == 0 ? 1 : 0;
+        }
+        if(dp[i][t]!=-1){
+            return dp[i][t];
+        }
+        int nonpick =   findmin(i-1, arr, t,dp);
+        int pick =  0;
+        if(arr[i]<=t){
+            pick =  findmin(i, arr, t-arr[i],dp);
+        }
+        return dp[i][t]=pick+nonpick;
+    }
+}
+```
+
+</details>
+
+### 🟡 1143. Longest Common Subsequence
+
+**Medium** · 🏷️ String, Dynamic Programming · 📅 2026-01-06
+
+#### 📄 Problem
+
+Given two strings `text1` and `text2`, return *the length of their longest **common subsequence**. *If there is no **common subsequence**, return `0`.
+
+A **subsequence** of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
+
+	- For example, `"ace"` is a subsequence of `"abcde"`.
+
+A **common subsequence** of two strings is a subsequence that is common to both strings.
+
+ 
+
+Example 1:
+
+```
+**Input:** text1 = "abcde", text2 = "ace" 
+**Output:** 3  
+**Explanation:** The longest common subsequence is "ace" and its length is 3.
+```
+
+Example 2:
+
+```
+**Input:** text1 = "abc", text2 = "abc"
+**Output:** 3
+**Explanation:** The longest common subsequence is "abc" and its length is 3.
+```
+
+Example 3:
+
+```
+**Input:** text1 = "abc", text2 = "def"
+**Output:** 0
+**Explanation:** There is no such common subsequence, so the result is 0.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= text1.length, text2.length <= 1000`
+	- `text1` and `text2` consist of only lowercase English characters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memoization
+Key idea: Matching characters extend LCS by 1; mismatches require excluding one—recursively try both and take maximum.
+Complexity: O(n*m) time / O(n*m) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int n = text1.length();
+        int m = text2.length();
+        int[][] dp = new int[n+1][m+1];
+        for(int i =0;i<n;i++){
+            Arrays.fill(dp[i],-1);
+        }
+        return findsubseq(n-1,m-1,text1,text2,dp);
+        
+    }
+
+    private int findsubseq(int i ,  int j , String text1, String text2,int[][] dp){
+
+        if(i<0 || j<0){
+            return 0;
+        }
+
+        if(dp[i][j]!=-1){
+            return dp[i][j];
+        }
+        if(text1.charAt(i) == text2.charAt(j)){
+            return dp[i][j]= 1 + findsubseq(i-1,j-1,text1,text2, dp);
+        }
+
+        return dp[i][j]=Integer.max(findsubseq(i-1,j,text1,text2,dp),findsubseq(i,j-1,text1,text2,dp));
+    }
+}
+```
+
+</details>
+
+### 🔴 115. Distinct Subsequences
+
+**Hard** · 🏷️ String, Dynamic Programming · 📅 2026-01-11
+
+#### 📄 Problem
+
+Given two strings s and t, return *the number of distinct* ***subsequences**** of *s* which equals *t.
+
+The test cases are generated so that the answer fits on a 32-bit signed integer.
+
+ 
+
+Example 1:
+
+```
+**Input:** s = "rabbbit", t = "rabbit"
+**Output:** 3
+**Explanation:**
+As shown below, there are 3 ways you can generate "rabbit" from s.
+`**rabb**b**it**`
+`**ra**b**bbit**`
+`**rab**b**bit**`
+```
+
+Example 2:
+
+```
+**Input:** s = "babgbag", t = "bag"
+**Output:** 5
+**Explanation:**
+As shown below, there are 5 ways you can generate "bag" from s.
+`**ba**b**g**bag`
+`**ba**bgba**g**`
+`**b**abgb**ag**`
+`ba**b**gb**ag**`
+`babg**bag**`
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= s.length, t.length <= 1000`
+	- `s` and `t` consist of English letters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memoization
+Key idea: For each position, if characters match, count both using and skipping; if not, skip.
+Complexity: O(n*m) time / O(n*m) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int numDistinct(String s, String t) {
+
+        int n = s.length();
+        int m = t.length();
+
+        int[][] dp = new int[n][m];
+        for(int i =0;i<n;i++){
+            Arrays.fill(dp[i],-1);
+        }
+        
+        return findcount(n-1,m-1,s,t,dp);
+    }
+
+    private int findcount(int i, int j , String s, String t,int[][] dp){
+
+        if(j<0){
+            return 1;
+        }
+        if(i<0){
+            return 0;
+        }
+        if(dp[i][j]!=-1){
+            return dp[i][j];
+        }
+
+        if(s.charAt(i) == t.charAt(j)){
+            return dp[i][j]=findcount(i-1,j-1,s,t,dp) + findcount(i-1,j,s,t,dp);
+
+        }
+        return dp[i][j]=findcount(i-1,j,s,t,dp);
     }
 }
 ```
@@ -3877,1133 +4695,6 @@ class Solution {
             }
         }
         return dp[i][last]=min;
-    }
-}
-```
-
-</details>
-
----
-
-## String (7)
-
-### 🟢 58. Length of Last Word
-
-**Easy** · 🏷️ String · 📅 2026-07-13
-
-#### 📄 Problem
-
-Given a string `s` consisting of words and spaces, return *the length of the **last** word in the string.*
-
-A **word** is a maximal substring consisting of non-space characters only.
-
- 
-
-Example 1:
-
-```
-**Input:** s = "Hello World"
-**Output:** 5
-**Explanation:** The last word is "World" with length 5.
-```
-
-Example 2:
-
-```
-**Input:** s = "   fly me   to   the moon  "
-**Output:** 4
-**Explanation:** The last word is "moon" with length 4.
-```
-
-Example 3:
-
-```
-**Input:** s = "luffy is still joyboy"
-**Output:** 6
-**Explanation:** The last word is "joyboy" with length 6.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= s.length <= 10^4`
-	- `s` consists of only English letters and spaces `' '`.
-	- There will be at least one word in `s`.
-
-#### 💡 Revision note
-
-_(not generated yet — run `python3 sync.py` to fill this in)_
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int lengthOfLastWord(String s) {
-
-        s = s.trim();
-
-        String[] str = s.split(" ");
-       int n = str.length;
-       System.out.println(str[n-1]);
-        
-        return str[n-1].length();
-        
-    }
-}
-```
-
-</details>
-
-### 🟢 2678. Number of Senior Citizens
-
-**Easy** · 🏷️ Array, String · 📅 2026-07-13
-
-#### 📄 Problem
-
-You are given a **0-indexed** array of strings `details`. Each element of `details` provides information about a given passenger compressed into a string of length `15`. The system is such that:
-
-	- The first ten characters consist of the phone number of passengers.
-	- The next character denotes the gender of the person.
-	- The following two characters are used to indicate the age of the person.
-	- The last two characters determine the seat allotted to that person.
-
-Return *the number of passengers who are **strictly ****more than 60 years old**.*
-
- 
-
-Example 1:
-
-```
-**Input:** details = ["7868190130M7522","5303914400F9211","9273338290F4010"]
-**Output:** 2
-**Explanation:** The passengers at indices 0, 1, and 2 have ages 75, 92, and 40. Thus, there are 2 people who are over 60 years old.
-```
-
-Example 2:
-
-```
-**Input:** details = ["1313579440F2036","2921522980M5644"]
-**Output:** 0
-**Explanation:** None of the passengers are older than 60.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= details.length <= 100`
-	- `details[i].length == 15`
-	- `details[i] consists of digits from '0' to '9'.`
-	- `details[i][10] is either 'M' or 'F' or 'O'.`
-	- The phone numbers and seat numbers of the passengers are distinct.
-
-#### 💡 Revision note
-
-_(not generated yet — run `python3 sync.py` to fill this in)_
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int countSeniors(String[] details) {
-
-        int n = details.length;
-        int ans =0;
-        for(int i=0; i<n; i++){
-            String s = details[i];
-            char[] ch = s.toCharArray();
-            int j = ch[11]-48;
-            int k = ch[12]-48;
-            int val = j*10 + k;
-            if(val > 60){
-                ans++;
-            }
-            // System.out.println(j);
-            //  System.out.println(k);
-            //   System.out.println("\n");
-        }
-
-        return ans;
-        
-    }
-}
-```
-
-</details>
-
-### 🟢 3110. Score of a String
-
-**Easy** · 🏷️ String · 📅 2026-07-13
-
-#### 📄 Problem
-
-You are given a string `s`. The **score** of a string is defined as the sum of the absolute difference between the **ASCII** values of adjacent characters.
-
-Return the **score** of* *`s`.
-
- 
-
-Example 1:
-
-**Input:** s = "hello"
-
-**Output:** 13
-
-**Explanation:**
-
-The **ASCII** values of the characters in `s` are: `'h' = 104`, `'e' = 101`, `'l' = 108`, `'o' = 111`. So, the score of `s` would be `|104 - 101| + |101 - 108| + |108 - 108| + |108 - 111| = 3 + 7 + 0 + 3 = 13`.
-
-Example 2:
-
-**Input:** s = "zaz"
-
-**Output:** 50
-
-**Explanation:**
-
-The **ASCII** values of the characters in `s` are: `'z' = 122`, `'a' = 97`. So, the score of `s` would be `|122 - 97| + |97 - 122| = 25 + 25 = 50`.
-
- 
-
-**Constraints:**
-
-	- `2 <= s.length <= 100`
-	- `s` consists only of lowercase English letters.
-
-#### 💡 Revision note
-
-_(not generated yet — run `python3 sync.py` to fill this in)_
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int scoreOfString(String s) {
-
-        char[] ch = s.toCharArray();
-
-        int n = ch.length;
-        int ans = 0;
-        for(int i=0 ; i<n-1; i++){
-            ans = ans + Math.abs(ch[i]-ch[i+1]);
-        }
-        return ans;
-        
-    }
-}
-```
-
-</details>
-
-### 🟡 72. Edit Distance
-
-**Medium** · 🏷️ String, Dynamic Programming · 📅 2026-01-13
-
-#### 📄 Problem
-
-Given two strings `word1` and `word2`, return *the minimum number of operations required to convert `word1` to `word2`*.
-
-You have the following three operations permitted on a word:
-
-	- Insert a character
-	- Delete a character
-	- Replace a character
-
- 
-
-Example 1:
-
-```
-**Input:** word1 = "horse", word2 = "ros"
-**Output:** 3
-**Explanation:** 
-horse -> rorse (replace 'h' with 'r')
-rorse -> rose (remove 'r')
-rose -> ros (remove 'e')
-```
-
-Example 2:
-
-```
-**Input:** word1 = "intention", word2 = "execution"
-**Output:** 5
-**Explanation:** 
-intention -> inention (remove 't')
-inention -> enention (replace 'i' with 'e')
-enention -> exention (replace 'n' with 'x')
-exention -> exection (replace 'n' with 'c')
-exection -> execution (insert 'u')
-```
-
- 
-
-**Constraints:**
-
-	- `0 <= word1.length, word2.length <= 500`
-	- `word1` and `word2` consist of lowercase English letters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memo
-Key idea: When characters match, no operation needed; when they don't, choose minimum cost among insert, delete, or replace operations.
-Complexity: O(n*m) time / O(n*m) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int minDistance(String word1, String word2) {
-
-        int n = word1.length();
-        int m = word2.length();
-        int[][] dp = new int[n][m];
-        for(int i = 0;i<n;i++){
-            Arrays.fill(dp[i],-1);
-        }
-
-        return findmin(n-1,m-1,word1,word2,dp);
-
-        
-    }
-
-    private int findmin(int i, int j, String w1, String w2, int[][] dp){
-
-        if(i < 0){
-            return j+1;
-        }
-
-        if(j < 0){
-           return i+1;
-        }
-        if(dp[i][j] != -1){
-            return dp[i][j];
-        }
-        
-
-        if(w1.charAt(i) == w2.charAt(j)){
-            return dp[i][j]=findmin(i-1,j-1,w1,w2,dp);
-        }
-        int replace = 1 + findmin(i-1,j-1,w1,w2,dp);
-        int remove = 1 + findmin(i-1,j,w1,w2,dp);
-        int insert = 1 + findmin(i,j-1,w1,w2,dp);
-        return dp[i][j]=Integer.min(insert, Integer.min(replace,remove));
-
-    }
-}
-```
-
-</details>
-
-### 🟡 1143. Longest Common Subsequence
-
-**Medium** · 🏷️ String, Dynamic Programming · 📅 2026-01-06
-
-#### 📄 Problem
-
-Given two strings `text1` and `text2`, return *the length of their longest **common subsequence**. *If there is no **common subsequence**, return `0`.
-
-A **subsequence** of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
-
-	- For example, `"ace"` is a subsequence of `"abcde"`.
-
-A **common subsequence** of two strings is a subsequence that is common to both strings.
-
- 
-
-Example 1:
-
-```
-**Input:** text1 = "abcde", text2 = "ace" 
-**Output:** 3  
-**Explanation:** The longest common subsequence is "ace" and its length is 3.
-```
-
-Example 2:
-
-```
-**Input:** text1 = "abc", text2 = "abc"
-**Output:** 3
-**Explanation:** The longest common subsequence is "abc" and its length is 3.
-```
-
-Example 3:
-
-```
-**Input:** text1 = "abc", text2 = "def"
-**Output:** 0
-**Explanation:** There is no such common subsequence, so the result is 0.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= text1.length, text2.length <= 1000`
-	- `text1` and `text2` consist of only lowercase English characters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memoization
-Key idea: Matching characters extend LCS by 1; mismatches require excluding one—recursively try both and take maximum.
-Complexity: O(n*m) time / O(n*m) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int longestCommonSubsequence(String text1, String text2) {
-        int n = text1.length();
-        int m = text2.length();
-        int[][] dp = new int[n+1][m+1];
-        for(int i =0;i<n;i++){
-            Arrays.fill(dp[i],-1);
-        }
-        return findsubseq(n-1,m-1,text1,text2,dp);
-        
-    }
-
-    private int findsubseq(int i ,  int j , String text1, String text2,int[][] dp){
-
-        if(i<0 || j<0){
-            return 0;
-        }
-
-        if(dp[i][j]!=-1){
-            return dp[i][j];
-        }
-        if(text1.charAt(i) == text2.charAt(j)){
-            return dp[i][j]= 1 + findsubseq(i-1,j-1,text1,text2, dp);
-        }
-
-        return dp[i][j]=Integer.max(findsubseq(i-1,j,text1,text2,dp),findsubseq(i,j-1,text1,text2,dp));
-    }
-}
-```
-
-</details>
-
-### 🟡 3163. String Compression III
-
-**Medium** · 🏷️ String · 📅 2024-09-21
-
-#### 📄 Problem
-
-Given a string `word`, compress it using the following algorithm:
-
-	- Begin with an empty string `comp`. While `word` is **not** empty, use the following operation:
-
-	
-
-		Remove a maximum length prefix of `word` made of a *single character* `c` repeating **at most** 9 times.
-		- Append the length of the prefix followed by `c` to `comp`.
-	
-
-	
-
-Return the string `comp`.
-
- 
-
-Example 1:
-
-**Input:** word = "abcde"
-
-**Output:** "1a1b1c1d1e"
-
-**Explanation:**
-
-Initially, `comp = ""`. Apply the operation 5 times, choosing `"a"`, `"b"`, `"c"`, `"d"`, and `"e"` as the prefix in each operation.
-
-For each prefix, append `"1"` followed by the character to `comp`.
-
-Example 2:
-
-**Input:** word = "aaaaaaaaaaaaaabb"
-
-**Output:** "9a5a2b"
-
-**Explanation:**
-
-Initially, `comp = ""`. Apply the operation 3 times, choosing `"aaaaaaaaa"`, `"aaaaa"`, and `"bb"` as the prefix in each operation.
-
-	- For prefix `"aaaaaaaaa"`, append `"9"` followed by `"a"` to `comp`.
-	- For prefix `"aaaaa"`, append `"5"` followed by `"a"` to `comp`.
-	- For prefix `"bb"`, append `"2"` followed by `"b"` to `comp`.
-
- 
-
-**Constraints:**
-
-	- `1 <= word.length <= 2 * 10^5`
-	- `word` consists only of lowercase English letters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Single pass grouping
-Key idea: Groups of identical characters are independent; emit each immediately upon character change or reaching 9, solving in one pass.
-Complexity: O(n) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public String compressedString(String word) {
-        String comp = "";
-        int len = word.length();
-        int j =1;
-        if(len == 1){
-            return 1+word;
-        }
-        for(int i=0;i<len-1;i++){
-            if(word.charAt(i) == word.charAt(i+1) && j<9){
-                j++;
-            }
-            else {
-                comp = comp+j+word.charAt(i);
-                j=1;
-            }
-        }
-        if(word.charAt(len-1) == word.charAt(len-2)){
-            comp = comp+j+word.charAt(len-1);
-        }else{
-            comp = comp+1+word.charAt(len-1);
-        }
-        return comp;
-        
-    }
-}
-```
-
-</details>
-
-### 🔴 115. Distinct Subsequences
-
-**Hard** · 🏷️ String, Dynamic Programming · 📅 2026-01-11
-
-#### 📄 Problem
-
-Given two strings s and t, return *the number of distinct* ***subsequences**** of *s* which equals *t.
-
-The test cases are generated so that the answer fits on a 32-bit signed integer.
-
- 
-
-Example 1:
-
-```
-**Input:** s = "rabbbit", t = "rabbit"
-**Output:** 3
-**Explanation:**
-As shown below, there are 3 ways you can generate "rabbit" from s.
-`**rabb**b**it**`
-`**ra**b**bbit**`
-`**rab**b**bit**`
-```
-
-Example 2:
-
-```
-**Input:** s = "babgbag", t = "bag"
-**Output:** 5
-**Explanation:**
-As shown below, there are 5 ways you can generate "bag" from s.
-`**ba**b**g**bag`
-`**ba**bgba**g**`
-`**b**abgb**ag**`
-`ba**b**gb**ag**`
-`babg**bag**`
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= s.length, t.length <= 1000`
-	- `s` and `t` consist of English letters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memoization
-Key idea: For each position, if characters match, count both using and skipping; if not, skip.
-Complexity: O(n*m) time / O(n*m) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int numDistinct(String s, String t) {
-
-        int n = s.length();
-        int m = t.length();
-
-        int[][] dp = new int[n][m];
-        for(int i =0;i<n;i++){
-            Arrays.fill(dp[i],-1);
-        }
-        
-        return findcount(n-1,m-1,s,t,dp);
-    }
-
-    private int findcount(int i, int j , String s, String t,int[][] dp){
-
-        if(j<0){
-            return 1;
-        }
-        if(i<0){
-            return 0;
-        }
-        if(dp[i][j]!=-1){
-            return dp[i][j];
-        }
-
-        if(s.charAt(i) == t.charAt(j)){
-            return dp[i][j]=findcount(i-1,j-1,s,t,dp) + findcount(i-1,j,s,t,dp);
-
-        }
-        return dp[i][j]=findcount(i-1,j,s,t,dp);
-    }
-}
-```
-
-</details>
-
----
-
-## Dynamic Programming (6)
-
-### 🟢 121. Best Time to Buy and Sell Stock
-
-**Easy** · 🏷️ Array, Dynamic Programming · 📅 2026-07-11
-
-#### 📄 Problem
-
-You are given an array `prices` where `prices[i]` is the price of a given stock on the `i^th` day.
-
-You want to maximize your profit by choosing a **single day** to buy one stock and choosing a **different day in the future** to sell that stock.
-
-Return *the maximum profit you can achieve from this transaction*. If you cannot achieve any profit, return `0`.
-
- 
-
-Example 1:
-
-```
-**Input:** prices = [7,1,5,3,6,4]
-**Output:** 5
-**Explanation:** Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
-Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
-```
-
-Example 2:
-
-```
-**Input:** prices = [7,6,4,3,1]
-**Output:** 0
-**Explanation:** In this case, no transactions are done and the max profit = 0.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= prices.length <= 10^5`
-	- `0 <= prices[i] <= 10^4`
-
-#### 💡 Revision note
-
-```text
-Pattern: Single-pass min tracking
-Key idea: Maximum profit at each price is current price minus the minimum price before it.
-Complexity: O(n) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int maxProfit(int[] arr) {
-
-        int n = arr.length;
-        int min = arr[0];
-        int ans =0;
-
-        for(int i = 1;i<n;i++){
-            min = Integer.min(arr[i],min);
-            ans = Integer.max(ans, arr[i]-min);
-        }
-
-        return ans;
-        
-
-    }
-
-    
-
-  
-}
-```
-
-</details>
-
-### 🟡 120. Triangle
-
-**Medium** · 🏷️ Array, Dynamic Programming · 📅 2025-12-30
-
-#### 📄 Problem
-
-Given a `triangle` array, return *the minimum path sum from top to bottom*.
-
-For each step, you may move to an adjacent number of the row below. More formally, if you are on index `i` on the current row, you may move to either index `i` or index `i + 1` on the next row.
-
- 
-
-Example 1:
-
-```
-**Input:** triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
-**Output:** 11
-**Explanation:** The triangle looks like:
-   2
-  3 4
- 6 5 7
-4 1 8 3
-The minimum path sum from top to bottom is 2 + 3 + 5 + 1 = 11 (underlined above).
-```
-
-Example 2:
-
-```
-**Input:** triangle = [[-10]]
-**Output:** -10
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= triangle.length <= 200`
-	- `triangle[0].length == 1`
-	- `triangle[i].length == triangle[i - 1].length + 1`
-	- `-10^4 <= triangle[i][j] <= 10^4`
-
- 
-
-**Follow up:** Could you do this using only `O(n)` extra space, where `n` is the total number of rows in the triangle?
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memoization
-Key idea: At each position, minimum path equals current value plus the minimum of two paths below; memoize to avoid recomputation.
-Complexity: O(n²) time / O(n²) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int minimumTotal(List<List<Integer>> triangle) {
-        int n = triangle.size();
-        int m = triangle.get(n-1).size();
-        int[][] dp = new int[n][m];
-        for(int i =0;i<n;i++){
-            Arrays.fill(dp[i],(int)1e9);
-        }
-        return findmin(0,0,triangle.size(),triangle,dp);
-        
-    }
-
-    private int findmin(int i, int j ,int n, List<List<Integer>> triangle,int[][] dp){
-        if(i == n-1){
-            return triangle.get(i).get(j);
-        }
-        if(dp[i][j]!=(int)1e9){
-            return dp[i][j];
-        }
-
-        int d = triangle.get(i).get(j) + findmin(i+1,j,n,triangle,dp);
-        int da = triangle.get(i).get(j) + findmin(i+1,j+1,n,triangle,dp);
-        return dp[i][j]=Integer.min(d,da);
-    }
-}
-```
-
-</details>
-
-### 🟡 152. Maximum Product Subarray
-
-**Medium** · 🏷️ Array, Dynamic Programming · 📅 2026-02-02
-
-#### 📄 Problem
-
-Given an integer array `nums`, find a subarray that has the largest product, and return *the product*.
-
-The test cases are generated so that the answer will fit in a **32-bit** integer.
-
-**Note** that the product of an array with a single element is the value of that element.
-
- 
-
-Example 1:
-
-```
-**Input:** nums = [2,3,-2,4]
-**Output:** 6
-**Explanation:** [2,3] has the largest product 6.
-```
-
-Example 2:
-
-```
-**Input:** nums = [-2,0,-1]
-**Output:** 0
-**Explanation:** The result cannot be 2, because [-2,-1] is not a subarray.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= nums.length <= 2 * 10^4`
-	- `-10 <= nums[i] <= 10`
-	- The product of any subarray of `nums` is **guaranteed** to fit in a **32-bit** integer.
-
-#### 💡 Revision note
-
-```text
-Pattern: Prefix-Suffix Product Scan
-Key idea: Products from both left and right cover all subarrays; resetting at zeros handles negative-caused sign flips naturally.
-Complexity: O(n) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int maxProduct(int[] nums) {
-        int n = nums.length;
-        // if(n==1){
-        //     return nums[0];
-        // }
-        return findmax(nums.length,nums);
-        
-    }
-
-    private int findmax(int n , int[] arr){
-
-        int pre = 1;
-        int suf = 1;
-        int ans = Integer.MIN_VALUE;
-
-        for(int i=0; i<n; i++){
-            if(pre == 0){
-                pre = 1;
-            }
-            if(suf == 0){
-                suf = 1;
-            }
-            pre = pre * arr[i];
-            suf = suf * arr[n-i-1];
-            
-            ans = Integer.max(ans,Integer.max(pre,suf));
-            System.out.println(ans);
-        }
-
-        return ans;
-    }
-}
-```
-
-</details>
-
-### 🟡 198. House Robber
-
-**Medium** · 🏷️ Array, Dynamic Programming · 📅 2025-12-25
-
-#### 📄 Problem
-
-You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and **it will automatically contact the police if two adjacent houses were broken into on the same night**.
-
-Given an integer array `nums` representing the amount of money of each house, return *the maximum amount of money you can rob tonight **without alerting the police***.
-
- 
-
-Example 1:
-
-```
-**Input:** nums = [1,2,3,1]
-**Output:** 4
-**Explanation:** Rob house 1 (money = 1) and then rob house 3 (money = 3).
-Total amount you can rob = 1 + 3 = 4.
-```
-
-Example 2:
-
-```
-**Input:** nums = [2,7,9,3,1]
-**Output:** 12
-**Explanation:** Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
-Total amount you can rob = 2 + 9 + 1 = 12.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= nums.length <= 100`
-	- `0 <= nums[i] <= 400`
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memoization
-Key idea: Two choices per house—rob (add to i-2 max) or skip (keep i-1 max)—pick maximum; memoize subproblems.
-Complexity: O(n) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int rob(int[] nums) {
-
-        int n = nums.length;
-        if(n==1){
-            return nums[0];
-        }
-        int[] dp = new int[n];
-        Arrays.fill(dp,-1);
-        getmax(n-1,dp,nums);
-        return dp[n-1];
-        
-    }
-
-    private int getmax(int i, int[] dp, int[] arr){
-
-        if(i == 0 ){
-            return arr[i];
-        }
-        if(i<0){
-            return 0;
-        }
-
-        if(dp[i]!=-1){
-            return dp[i];
-        }
-
-        int pick = getmax(i-2, dp, arr) + arr[i];
-
-        int notpick = getmax(i-1,dp,arr);
-
-        return dp[i]=Integer.max(pick,notpick);
-    }
-}
-```
-
-</details>
-
-### 🟡 213. House Robber II
-
-**Medium** · 🏷️ Array, Dynamic Programming · 📅 2026-01-18
-
-#### 📄 Problem
-
-You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are **arranged in a circle.** That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and **it will automatically contact the police if two adjacent houses were broken into on the same night**.
-
-Given an integer array `nums` representing the amount of money of each house, return *the maximum amount of money you can rob tonight **without alerting the police***.
-
- 
-
-Example 1:
-
-```
-**Input:** nums = [2,3,2]
-**Output:** 3
-**Explanation:** You cannot rob house 1 (money = 2) and then rob house 3 (money = 2), because they are adjacent houses.
-```
-
-Example 2:
-
-```
-**Input:** nums = [1,2,3,1]
-**Output:** 4
-**Explanation:** Rob house 1 (money = 1) and then rob house 3 (money = 3).
-Total amount you can rob = 1 + 3 = 4.
-```
-
-Example 3:
-
-```
-**Input:** nums = [1,2,3]
-**Output:** 3
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= nums.length <= 100`
-	- `0 <= nums[i] <= 1000`
-
-#### 💡 Revision note
-
-```text
-Pattern: Case-split DP
-Key idea: Circular constraint prevents robbing both endpoints; solve two linear subproblems (exclude first or last) and take maximum.
-Complexity: O(n) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int rob(int[] nums) {
-        int n = nums.length;
-        if(n==1){
-            return nums[0];
-        }
-        int[] arr1 = new int[n-1];
-        int[] arr2 = new int[n-1];
-
-        for(int i = 0; i<n-1; i++){
-           arr1[i]=nums[i];
-        }
-        for(int i = 1;i<n;i++){
-            arr2[i-1]=nums[i];
-        }
-        int[] dp1 = new int[n-1];
-        int[] dp2 = new int[n-1];
-
-        Arrays.fill(dp1,-1);
-        Arrays.fill(dp2,-1);
-
-        int m1 =  findmax(n-2,arr1,dp1);
-        int m2 =  findmax(n-2,arr2,dp2);
-        return Integer.max(m1,m2);
-        
-
-        
-    }
-
-    private int findmax(int i, int[] arr,int[] dp){
-        if(i == 0){
-           return arr[0];
-        }
-        if(i<0){
-            return 0;
-        }
-        if(dp[i]!=-1){
-            return dp[i];
-        }
-        int nonpick = findmax(i-1,arr,dp);
-        int pick = arr[i] + findmax(i-2,arr,dp);
-        
-        return  dp[i]=Integer.max(pick,nonpick);
-    }
-
-}
-```
-
-</details>
-
-### 🟡 518. Coin Change II
-
-**Medium** · 🏷️ Array, Dynamic Programming · 📅 2026-01-05
-
-#### 📄 Problem
-
-You are given an integer array `coins` representing coins of different denominations and an integer `amount` representing a total amount of money.
-
-Return *the number of combinations that make up that amount*. If that amount of money cannot be made up by any combination of the coins, return `0`.
-
-You may assume that you have an infinite number of each kind of coin.
-
-The **final** answer is **guaranteed** to fit into a signed **32-bit** integer.
-
- 
-
-Example 1:
-
-```
-**Input:** amount = 5, coins = [1,2,5]
-**Output:** 4
-**Explanation:** there are four ways to make up the amount:
-5=5
-5=2+2+1
-5=2+1+1+1
-5=1+1+1+1+1
-```
-
-Example 2:
-
-```
-**Input:** amount = 3, coins = [2]
-**Output:** 0
-**Explanation:** the amount of 3 cannot be made up just with coins of 2.
-```
-
-Example 3:
-
-```
-**Input:** amount = 10, coins = [10]
-**Output:** 1
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= coins.length <= 300`
-	- `1 <= coins[i] <= 5000`
-	- All the values of `coins` are **unique**.
-	- `0 <= amount <= 5000`
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memo
-Key idea: Iterate coins sequentially, keeping index fixed when picking to allow reuse and count combinations not permutations.
-Complexity: O(n × amount) time / O(n × amount) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int change( int amount,int[] coins) {
-
-        int n = coins.length;
-        int[][] dp = new int[n][amount+1];
-        for(int i =0;i<n;i++){
-            Arrays.fill(dp[i],-1);
-        }
-        return findmin(n-1,coins,amount,dp);
-        
-    }
-
-    private int findmin(int i, int[] arr, int t,int[][] dp){
-
-        if(i == 0){
-            return (t % arr[i]) == 0 ? 1 : 0;
-        }
-        if(dp[i][t]!=-1){
-            return dp[i][t];
-        }
-        int nonpick =   findmin(i-1, arr, t,dp);
-        int pick =  0;
-        if(arr[i]<=t){
-            pick =  findmin(i, arr, t-arr[i],dp);
-        }
-        return dp[i][t]=pick+nonpick;
     }
 }
 ```
@@ -8144,6 +7835,832 @@ class Solution {
 
 ---
 
+## String (4)
+
+### 🟢 58. Length of Last Word
+
+**Easy** · 🏷️ String · 📅 2026-07-13
+
+#### 📄 Problem
+
+Given a string `s` consisting of words and spaces, return *the length of the **last** word in the string.*
+
+A **word** is a maximal substring consisting of non-space characters only.
+
+ 
+
+Example 1:
+
+```
+**Input:** s = "Hello World"
+**Output:** 5
+**Explanation:** The last word is "World" with length 5.
+```
+
+Example 2:
+
+```
+**Input:** s = "   fly me   to   the moon  "
+**Output:** 4
+**Explanation:** The last word is "moon" with length 4.
+```
+
+Example 3:
+
+```
+**Input:** s = "luffy is still joyboy"
+**Output:** 6
+**Explanation:** The last word is "joyboy" with length 6.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= s.length <= 10^4`
+	- `s` consists of only English letters and spaces `' '`.
+	- There will be at least one word in `s`.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int lengthOfLastWord(String s) {
+
+        s = s.trim();
+
+        String[] str = s.split(" ");
+       int n = str.length;
+       System.out.println(str[n-1]);
+        
+        return str[n-1].length();
+        
+    }
+}
+```
+
+</details>
+
+### 🟢 2678. Number of Senior Citizens
+
+**Easy** · 🏷️ Array, String · 📅 2026-07-13
+
+#### 📄 Problem
+
+You are given a **0-indexed** array of strings `details`. Each element of `details` provides information about a given passenger compressed into a string of length `15`. The system is such that:
+
+	- The first ten characters consist of the phone number of passengers.
+	- The next character denotes the gender of the person.
+	- The following two characters are used to indicate the age of the person.
+	- The last two characters determine the seat allotted to that person.
+
+Return *the number of passengers who are **strictly ****more than 60 years old**.*
+
+ 
+
+Example 1:
+
+```
+**Input:** details = ["7868190130M7522","5303914400F9211","9273338290F4010"]
+**Output:** 2
+**Explanation:** The passengers at indices 0, 1, and 2 have ages 75, 92, and 40. Thus, there are 2 people who are over 60 years old.
+```
+
+Example 2:
+
+```
+**Input:** details = ["1313579440F2036","2921522980M5644"]
+**Output:** 0
+**Explanation:** None of the passengers are older than 60.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= details.length <= 100`
+	- `details[i].length == 15`
+	- `details[i] consists of digits from '0' to '9'.`
+	- `details[i][10] is either 'M' or 'F' or 'O'.`
+	- The phone numbers and seat numbers of the passengers are distinct.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int countSeniors(String[] details) {
+
+        int n = details.length;
+        int ans =0;
+        for(int i=0; i<n; i++){
+            String s = details[i];
+            char[] ch = s.toCharArray();
+            int j = ch[11]-48;
+            int k = ch[12]-48;
+            int val = j*10 + k;
+            if(val > 60){
+                ans++;
+            }
+            // System.out.println(j);
+            //  System.out.println(k);
+            //   System.out.println("\n");
+        }
+
+        return ans;
+        
+    }
+}
+```
+
+</details>
+
+### 🟢 3110. Score of a String
+
+**Easy** · 🏷️ String · 📅 2026-07-13
+
+#### 📄 Problem
+
+You are given a string `s`. The **score** of a string is defined as the sum of the absolute difference between the **ASCII** values of adjacent characters.
+
+Return the **score** of* *`s`.
+
+ 
+
+Example 1:
+
+**Input:** s = "hello"
+
+**Output:** 13
+
+**Explanation:**
+
+The **ASCII** values of the characters in `s` are: `'h' = 104`, `'e' = 101`, `'l' = 108`, `'o' = 111`. So, the score of `s` would be `|104 - 101| + |101 - 108| + |108 - 108| + |108 - 111| = 3 + 7 + 0 + 3 = 13`.
+
+Example 2:
+
+**Input:** s = "zaz"
+
+**Output:** 50
+
+**Explanation:**
+
+The **ASCII** values of the characters in `s` are: `'z' = 122`, `'a' = 97`. So, the score of `s` would be `|122 - 97| + |97 - 122| = 25 + 25 = 50`.
+
+ 
+
+**Constraints:**
+
+	- `2 <= s.length <= 100`
+	- `s` consists only of lowercase English letters.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int scoreOfString(String s) {
+
+        char[] ch = s.toCharArray();
+
+        int n = ch.length;
+        int ans = 0;
+        for(int i=0 ; i<n-1; i++){
+            ans = ans + Math.abs(ch[i]-ch[i+1]);
+        }
+        return ans;
+        
+    }
+}
+```
+
+</details>
+
+### 🟡 3163. String Compression III
+
+**Medium** · 🏷️ String · 📅 2024-09-21
+
+#### 📄 Problem
+
+Given a string `word`, compress it using the following algorithm:
+
+	- Begin with an empty string `comp`. While `word` is **not** empty, use the following operation:
+
+	
+
+		Remove a maximum length prefix of `word` made of a *single character* `c` repeating **at most** 9 times.
+		- Append the length of the prefix followed by `c` to `comp`.
+	
+
+	
+
+Return the string `comp`.
+
+ 
+
+Example 1:
+
+**Input:** word = "abcde"
+
+**Output:** "1a1b1c1d1e"
+
+**Explanation:**
+
+Initially, `comp = ""`. Apply the operation 5 times, choosing `"a"`, `"b"`, `"c"`, `"d"`, and `"e"` as the prefix in each operation.
+
+For each prefix, append `"1"` followed by the character to `comp`.
+
+Example 2:
+
+**Input:** word = "aaaaaaaaaaaaaabb"
+
+**Output:** "9a5a2b"
+
+**Explanation:**
+
+Initially, `comp = ""`. Apply the operation 3 times, choosing `"aaaaaaaaa"`, `"aaaaa"`, and `"bb"` as the prefix in each operation.
+
+	- For prefix `"aaaaaaaaa"`, append `"9"` followed by `"a"` to `comp`.
+	- For prefix `"aaaaa"`, append `"5"` followed by `"a"` to `comp`.
+	- For prefix `"bb"`, append `"2"` followed by `"b"` to `comp`.
+
+ 
+
+**Constraints:**
+
+	- `1 <= word.length <= 2 * 10^5`
+	- `word` consists only of lowercase English letters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Single pass grouping
+Key idea: Groups of identical characters are independent; emit each immediately upon character change or reaching 9, solving in one pass.
+Complexity: O(n) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public String compressedString(String word) {
+        String comp = "";
+        int len = word.length();
+        int j =1;
+        if(len == 1){
+            return 1+word;
+        }
+        for(int i=0;i<len-1;i++){
+            if(word.charAt(i) == word.charAt(i+1) && j<9){
+                j++;
+            }
+            else {
+                comp = comp+j+word.charAt(i);
+                j=1;
+            }
+        }
+        if(word.charAt(len-1) == word.charAt(len-2)){
+            comp = comp+j+word.charAt(len-1);
+        }else{
+            comp = comp+1+word.charAt(len-1);
+        }
+        return comp;
+        
+    }
+}
+```
+
+</details>
+
+---
+
+## Trie (4)
+
+### 🟢 14. Longest Common Prefix
+
+**Easy** · 🏷️ Array, String, Trie · 📅 2026-07-14
+
+#### 📄 Problem
+
+Write a function to find the longest common prefix string amongst an array of strings.
+
+If there is no common prefix, return an empty string `""`.
+
+ 
+
+Example 1:
+
+```
+**Input:** strs = ["flower","flow","flight"]
+**Output:** "fl"
+```
+
+Example 2:
+
+```
+**Input:** strs = ["dog","racecar","car"]
+**Output:** ""
+**Explanation:** There is no common prefix among the input strings.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= strs.length <= 200`
+	- `0 <= strs[i].length <= 200`
+	- `strs[i]` consists of only lowercase English letters if it is non-empty.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+
+        if(strs == null || strs.length == 0){
+            return "";
+        }
+
+        String prefix = strs[0];
+
+        for(int i=1; i<strs.length; i++){
+            while(!strs[i].startsWith(prefix)){
+                prefix = prefix.substring(0,prefix.length()-1);
+                if(prefix.length() == 0){
+                    break;
+                }
+            }
+        }
+        return prefix;
+        
+    }
+}
+
+
+```
+
+</details>
+
+### 🟡 208. Implement Trie (Prefix Tree)
+
+**Medium** · 🏷️ Hash Table, String, Design, Trie · 📅 2026-03-17
+
+#### 📄 Problem
+
+A **trie** (pronounced as "try") or **prefix tree** is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker.
+
+Implement the Trie class:
+
+	- `Trie()` Initializes the trie object.
+	- `void insert(String word)` Inserts the string `word` into the trie.
+	- `boolean search(String word)` Returns `true` if the string `word` is in the trie (i.e., was inserted before), and `false` otherwise.
+	- `boolean startsWith(String prefix)` Returns `true` if there is a previously inserted string `word` that has the prefix `prefix`, and `false` otherwise.
+
+ 
+
+Example 1:
+
+```
+**Input**
+["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
+[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]
+**Output**
+[null, null, true, false, true, null, true]
+
+**Explanation**
+Trie trie = new Trie();
+trie.insert("apple");
+trie.search("apple");   // return True
+trie.search("app");     // return False
+trie.startsWith("app"); // return True
+trie.insert("app");
+trie.search("app");     // return True
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= word.length, prefix.length <= 2000`
+	- `word` and `prefix` consist only of lowercase English letters.
+	- At most `3 * 10^4` calls **in total** will be made to `insert`, `search`, and `startsWith`.
+
+#### 💡 Revision note
+
+```text
+Pattern: Trie
+Key idea: Hierarchical character storage enables fast prefix and word lookup by traversing one path per query, not searching all stored strings.
+Complexity: O(m) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Node{
+
+    Node[] item = new Node[26];
+    boolean flag = false;
+
+    boolean containsKey(char ch){
+        return (item[ch -'a'] != null);
+    }
+
+    void put(char ch, Node node){
+        item[ch-'a']=node;
+    }
+
+    Node getNode(char ch){
+        return item[ch-'a'];
+    }
+    
+    boolean getFlag(){
+        return flag;
+    }
+
+
+
+}
+
+
+
+class Trie {
+
+    private static Node root;
+
+    public Trie() {
+        root = new Node();
+        
+    }
+    
+    public void insert(String word) {
+
+        Node curr = root;
+
+        for(int i =0; i<word.length(); i++){
+            char ch = word.charAt(i);
+            if(!curr.containsKey(ch)){
+                curr.put(ch,new Node());
+            }
+            curr = curr.getNode(ch);
+        }
+        curr.flag = true;
+        
+    }
+    
+    public boolean search(String word) {
+
+        Node curr = root;
+
+        for(int i =0;i<word.length();i++){
+            char ch = word.charAt(i);
+            if(!curr.containsKey(ch)){
+                return false;
+            }
+            curr = curr.getNode(ch);
+        }
+        return curr.flag;
+        
+    }
+    
+    public boolean startsWith(String word) {
+        Node curr = root;
+
+        for(int i =0;i<word.length();i++){
+            char ch = word.charAt(i);
+            if(!curr.containsKey(ch)){
+                return false;
+            }
+            curr = curr.getNode(ch);
+        }
+        return true;
+        
+    }
+}
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.insert(word);
+ * boolean param_2 = obj.search(word);
+ * boolean param_3 = obj.startsWith(prefix);
+ */
+```
+
+</details>
+
+### 🟡 211. Design Add and Search Words Data Structure
+
+**Medium** · 🏷️ String, Depth-First Search, Design, Trie · 📅 2026-03-19
+
+#### 📄 Problem
+
+Design a data structure that supports adding new words and finding if a string matches any previously added string.
+
+Implement the `WordDictionary` class:
+
+	- `WordDictionary()` Initializes the object.
+	- `void addWord(word)` Adds `word` to the data structure, it can be matched later.
+	- `bool search(word)` Returns `true` if there is any string in the data structure that matches `word` or `false` otherwise. `word` may contain dots `'.'` where dots can be matched with any letter.
+
+ 
+
+Example:
+
+```
+**Input**
+["WordDictionary","addWord","addWord","addWord","search","search","search","search"]
+[[],["bad"],["dad"],["mad"],["pad"],["bad"],[".ad"],["b.."]]
+**Output**
+[null,null,null,null,false,true,true,true]
+
+**Explanation**
+WordDictionary wordDictionary = new WordDictionary();
+wordDictionary.addWord("bad");
+wordDictionary.addWord("dad");
+wordDictionary.addWord("mad");
+wordDictionary.search("pad"); // return False
+wordDictionary.search("bad"); // return True
+wordDictionary.search(".ad"); // return True
+wordDictionary.search("b.."); // return True
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= word.length <= 25`
+	- `word` in `addWord` consists of lowercase English letters.
+	- `word` in `search` consist of `'.'` or lowercase English letters.
+	- There will be at most `2` dots in `word` for `search` queries.
+	- At most `10^4` calls will be made to `addWord` and `search`.
+
+#### 💡 Revision note
+
+```text
+Pattern: Trie with wildcard DFS
+Key idea: Trie stores all words by prefix; DFS with backtracking explores 26 branches at each wildcard to find matches.
+Complexity: O(m) addWord / O(26^d × m) search where d ≤ 2; O(N×m) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Node{
+
+    Node[] item = new Node[26];
+    boolean flag = false;
+
+    boolean containsKey(char ch){
+        return (item[ch-'a'] != null);
+    }
+
+    void setNode(char ch, Node node){
+        item[ch-'a']=node;
+    }
+
+    void setTrue(){
+        flag=true;
+    }
+
+    Node getNode(char ch){
+        return item[ch-'a'];
+    }
+
+    boolean getFlag(){
+        return flag;
+    }
+}
+
+
+class WordDictionary {
+
+    private static Node root;
+
+    public WordDictionary() {
+        root = new Node();
+    }
+    
+    public void addWord(String word) {
+        Node curr = root;
+        for(int i=0;i<word.length();i++){
+            char ch = word.charAt(i);
+            if(!curr.containsKey(ch)){
+                curr.setNode(ch,new Node());
+            }
+            curr = curr.getNode(ch);
+        }
+
+        curr.setTrue();
+
+    }
+    
+    public boolean search(String word) {
+    
+        return dfs(0,word,root);
+    }
+
+    private boolean dfs(int i , String word, Node node){
+        if( i == word.length()){
+            return node.getFlag();
+        }
+
+        char ch = word.charAt(i);
+        if(ch != '.'){
+            if(!node.containsKey(ch)){
+                return false;
+            }
+            return dfs(i+1,word,node.getNode(ch));
+        }
+
+        for(int j = 0;j<26;j++){
+            if(node.item[j]!=null){
+                if(dfs(i+1,word,node.item[j])){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary obj = new WordDictionary();
+ * obj.addWord(word);
+ * boolean param_2 = obj.search(word);
+ */
+```
+
+</details>
+
+### 🔴 212. Word Search II
+
+**Hard** · 🏷️ Array, String, Backtracking, Trie, Matrix · 📅 2026-03-21
+
+#### 📄 Problem
+
+Given an `m x n` `board` of characters and a list of strings `words`, return *all words on the board*.
+
+Each word must be constructed from letters of sequentially adjacent cells, where **adjacent cells** are horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
+
+ 
+
+Example 1:
+
+```
+**Input:** board = [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]], words = ["oath","pea","eat","rain"]
+**Output:** ["eat","oath"]
+```
+
+Example 2:
+
+```
+**Input:** board = [["a","b"],["c","d"]], words = ["abcb"]
+**Output:** []
+```
+
+ 
+
+**Constraints:**
+
+	- `m == board.length`
+	- `n == board[i].length`
+	- `1 <= m, n <= 12`
+	- `board[i][j]` is a lowercase English letter.
+	- `1 <= words.length <= 3 * 10^4`
+	- `1 <= words[i].length <= 10`
+	- `words[i]` consists of lowercase English letters.
+	- All the strings of `words` are unique.
+
+#### 💡 Revision note
+
+```text
+Pattern: Trie + DFS Backtracking
+Key idea: Trie prunes invalid prefixes; DFS with backtracking exhaustively explores valid word paths.
+Complexity: O(m*n*4^L) time / O(m*n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Node{
+    Node[] item = new Node[26];
+    String word = null;
+
+    boolean containsKey(char ch){
+        return (item[ch-'a'] != null);
+    }
+
+    void addNode(char ch, Node node){
+        item[ch-'a'] = node;
+    }
+
+    Node getNode(char ch){
+        return item[ch-'a'];
+    }
+
+    void setWord(String word){
+        this.word = word;
+    }
+    
+}
+
+class Trie{
+
+    public  Node root;
+
+    Trie(){
+        root = new Node();
+    }
+
+    void addWord(String word){
+        Node curr = root;
+        for(int i=0 ; i<word.length() ; i++){
+            char ch = word.charAt(i);
+            if(!curr.containsKey(ch)){
+                curr.addNode(ch,new Node());
+            }
+            curr = curr.getNode(ch);
+        }
+        curr.setWord(word);
+    }
+}
+
+class Solution {
+
+    int[] rr = {0,0,1,-1};
+    int[] cc = {-1,1,0,0};
+
+    public List<String> findWords(char[][] board, String[] words) {
+
+        Trie trie = new Trie();
+        for(int i = 0; i<words.length; i++){
+            trie.addWord(words[i]);
+        }
+        int n = board.length;
+        int m = board[0].length;
+        boolean[][] vis = new boolean[n][m];
+        List<String> res= new ArrayList<>();
+
+        for(int i=0;i<n;i++){
+            for(int j = 0;j<m;j++){
+                dfs(i,j,board,vis,res,trie.root);
+            }
+        }
+
+        return res;
+    }
+
+    private void dfs(int i , int j ,char[][] board, boolean[][] vis, List<String>res, Node node){
+
+        if (i < 0 || j < 0 || i >= board.length || j >= board[0].length || vis[i][j]) {
+            return;
+        }
+
+        
+
+        char ch = board[i][j];
+
+        if(!node.containsKey(ch)){
+            return;
+        }
+         vis[i][j]= true;
+        node = node.getNode(ch);
+        if(node.word!=null){
+            res.add(node.word);
+            node.setWord(null);
+        }
+
+        for(int k=0;k<4;k++){
+            int idx = rr[k]+i;
+            int idy = cc[k]+j;
+            dfs(idx,idy,board,vis,res,node);
+
+        }
+        vis[i][j]= false;
+
+    }
+}
+```
+
+</details>
+
+---
+
 ## Union-Find (4)
 
 ### 🟡 128. Longest Consecutive Sequence
@@ -9605,454 +10122,6 @@ class Solution {
 
         
         // return res;
-    }
-}
-```
-
-</details>
-
----
-
-## Trie (3)
-
-### 🟡 208. Implement Trie (Prefix Tree)
-
-**Medium** · 🏷️ Hash Table, String, Design, Trie · 📅 2026-03-17
-
-#### 📄 Problem
-
-A **trie** (pronounced as "try") or **prefix tree** is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker.
-
-Implement the Trie class:
-
-	- `Trie()` Initializes the trie object.
-	- `void insert(String word)` Inserts the string `word` into the trie.
-	- `boolean search(String word)` Returns `true` if the string `word` is in the trie (i.e., was inserted before), and `false` otherwise.
-	- `boolean startsWith(String prefix)` Returns `true` if there is a previously inserted string `word` that has the prefix `prefix`, and `false` otherwise.
-
- 
-
-Example 1:
-
-```
-**Input**
-["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
-[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]
-**Output**
-[null, null, true, false, true, null, true]
-
-**Explanation**
-Trie trie = new Trie();
-trie.insert("apple");
-trie.search("apple");   // return True
-trie.search("app");     // return False
-trie.startsWith("app"); // return True
-trie.insert("app");
-trie.search("app");     // return True
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= word.length, prefix.length <= 2000`
-	- `word` and `prefix` consist only of lowercase English letters.
-	- At most `3 * 10^4` calls **in total** will be made to `insert`, `search`, and `startsWith`.
-
-#### 💡 Revision note
-
-```text
-Pattern: Trie
-Key idea: Hierarchical character storage enables fast prefix and word lookup by traversing one path per query, not searching all stored strings.
-Complexity: O(m) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Node{
-
-    Node[] item = new Node[26];
-    boolean flag = false;
-
-    boolean containsKey(char ch){
-        return (item[ch -'a'] != null);
-    }
-
-    void put(char ch, Node node){
-        item[ch-'a']=node;
-    }
-
-    Node getNode(char ch){
-        return item[ch-'a'];
-    }
-    
-    boolean getFlag(){
-        return flag;
-    }
-
-
-
-}
-
-
-
-class Trie {
-
-    private static Node root;
-
-    public Trie() {
-        root = new Node();
-        
-    }
-    
-    public void insert(String word) {
-
-        Node curr = root;
-
-        for(int i =0; i<word.length(); i++){
-            char ch = word.charAt(i);
-            if(!curr.containsKey(ch)){
-                curr.put(ch,new Node());
-            }
-            curr = curr.getNode(ch);
-        }
-        curr.flag = true;
-        
-    }
-    
-    public boolean search(String word) {
-
-        Node curr = root;
-
-        for(int i =0;i<word.length();i++){
-            char ch = word.charAt(i);
-            if(!curr.containsKey(ch)){
-                return false;
-            }
-            curr = curr.getNode(ch);
-        }
-        return curr.flag;
-        
-    }
-    
-    public boolean startsWith(String word) {
-        Node curr = root;
-
-        for(int i =0;i<word.length();i++){
-            char ch = word.charAt(i);
-            if(!curr.containsKey(ch)){
-                return false;
-            }
-            curr = curr.getNode(ch);
-        }
-        return true;
-        
-    }
-}
-
-/**
- * Your Trie object will be instantiated and called as such:
- * Trie obj = new Trie();
- * obj.insert(word);
- * boolean param_2 = obj.search(word);
- * boolean param_3 = obj.startsWith(prefix);
- */
-```
-
-</details>
-
-### 🟡 211. Design Add and Search Words Data Structure
-
-**Medium** · 🏷️ String, Depth-First Search, Design, Trie · 📅 2026-03-19
-
-#### 📄 Problem
-
-Design a data structure that supports adding new words and finding if a string matches any previously added string.
-
-Implement the `WordDictionary` class:
-
-	- `WordDictionary()` Initializes the object.
-	- `void addWord(word)` Adds `word` to the data structure, it can be matched later.
-	- `bool search(word)` Returns `true` if there is any string in the data structure that matches `word` or `false` otherwise. `word` may contain dots `'.'` where dots can be matched with any letter.
-
- 
-
-Example:
-
-```
-**Input**
-["WordDictionary","addWord","addWord","addWord","search","search","search","search"]
-[[],["bad"],["dad"],["mad"],["pad"],["bad"],[".ad"],["b.."]]
-**Output**
-[null,null,null,null,false,true,true,true]
-
-**Explanation**
-WordDictionary wordDictionary = new WordDictionary();
-wordDictionary.addWord("bad");
-wordDictionary.addWord("dad");
-wordDictionary.addWord("mad");
-wordDictionary.search("pad"); // return False
-wordDictionary.search("bad"); // return True
-wordDictionary.search(".ad"); // return True
-wordDictionary.search("b.."); // return True
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= word.length <= 25`
-	- `word` in `addWord` consists of lowercase English letters.
-	- `word` in `search` consist of `'.'` or lowercase English letters.
-	- There will be at most `2` dots in `word` for `search` queries.
-	- At most `10^4` calls will be made to `addWord` and `search`.
-
-#### 💡 Revision note
-
-```text
-Pattern: Trie with wildcard DFS
-Key idea: Trie stores all words by prefix; DFS with backtracking explores 26 branches at each wildcard to find matches.
-Complexity: O(m) addWord / O(26^d × m) search where d ≤ 2; O(N×m) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Node{
-
-    Node[] item = new Node[26];
-    boolean flag = false;
-
-    boolean containsKey(char ch){
-        return (item[ch-'a'] != null);
-    }
-
-    void setNode(char ch, Node node){
-        item[ch-'a']=node;
-    }
-
-    void setTrue(){
-        flag=true;
-    }
-
-    Node getNode(char ch){
-        return item[ch-'a'];
-    }
-
-    boolean getFlag(){
-        return flag;
-    }
-}
-
-
-class WordDictionary {
-
-    private static Node root;
-
-    public WordDictionary() {
-        root = new Node();
-    }
-    
-    public void addWord(String word) {
-        Node curr = root;
-        for(int i=0;i<word.length();i++){
-            char ch = word.charAt(i);
-            if(!curr.containsKey(ch)){
-                curr.setNode(ch,new Node());
-            }
-            curr = curr.getNode(ch);
-        }
-
-        curr.setTrue();
-
-    }
-    
-    public boolean search(String word) {
-    
-        return dfs(0,word,root);
-    }
-
-    private boolean dfs(int i , String word, Node node){
-        if( i == word.length()){
-            return node.getFlag();
-        }
-
-        char ch = word.charAt(i);
-        if(ch != '.'){
-            if(!node.containsKey(ch)){
-                return false;
-            }
-            return dfs(i+1,word,node.getNode(ch));
-        }
-
-        for(int j = 0;j<26;j++){
-            if(node.item[j]!=null){
-                if(dfs(i+1,word,node.item[j])){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-}
-
-/**
- * Your WordDictionary object will be instantiated and called as such:
- * WordDictionary obj = new WordDictionary();
- * obj.addWord(word);
- * boolean param_2 = obj.search(word);
- */
-```
-
-</details>
-
-### 🔴 212. Word Search II
-
-**Hard** · 🏷️ Array, String, Backtracking, Trie, Matrix · 📅 2026-03-21
-
-#### 📄 Problem
-
-Given an `m x n` `board` of characters and a list of strings `words`, return *all words on the board*.
-
-Each word must be constructed from letters of sequentially adjacent cells, where **adjacent cells** are horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
-
- 
-
-Example 1:
-
-```
-**Input:** board = [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]], words = ["oath","pea","eat","rain"]
-**Output:** ["eat","oath"]
-```
-
-Example 2:
-
-```
-**Input:** board = [["a","b"],["c","d"]], words = ["abcb"]
-**Output:** []
-```
-
- 
-
-**Constraints:**
-
-	- `m == board.length`
-	- `n == board[i].length`
-	- `1 <= m, n <= 12`
-	- `board[i][j]` is a lowercase English letter.
-	- `1 <= words.length <= 3 * 10^4`
-	- `1 <= words[i].length <= 10`
-	- `words[i]` consists of lowercase English letters.
-	- All the strings of `words` are unique.
-
-#### 💡 Revision note
-
-```text
-Pattern: Trie + DFS Backtracking
-Key idea: Trie prunes invalid prefixes; DFS with backtracking exhaustively explores valid word paths.
-Complexity: O(m*n*4^L) time / O(m*n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Node{
-    Node[] item = new Node[26];
-    String word = null;
-
-    boolean containsKey(char ch){
-        return (item[ch-'a'] != null);
-    }
-
-    void addNode(char ch, Node node){
-        item[ch-'a'] = node;
-    }
-
-    Node getNode(char ch){
-        return item[ch-'a'];
-    }
-
-    void setWord(String word){
-        this.word = word;
-    }
-    
-}
-
-class Trie{
-
-    public  Node root;
-
-    Trie(){
-        root = new Node();
-    }
-
-    void addWord(String word){
-        Node curr = root;
-        for(int i=0 ; i<word.length() ; i++){
-            char ch = word.charAt(i);
-            if(!curr.containsKey(ch)){
-                curr.addNode(ch,new Node());
-            }
-            curr = curr.getNode(ch);
-        }
-        curr.setWord(word);
-    }
-}
-
-class Solution {
-
-    int[] rr = {0,0,1,-1};
-    int[] cc = {-1,1,0,0};
-
-    public List<String> findWords(char[][] board, String[] words) {
-
-        Trie trie = new Trie();
-        for(int i = 0; i<words.length; i++){
-            trie.addWord(words[i]);
-        }
-        int n = board.length;
-        int m = board[0].length;
-        boolean[][] vis = new boolean[n][m];
-        List<String> res= new ArrayList<>();
-
-        for(int i=0;i<n;i++){
-            for(int j = 0;j<m;j++){
-                dfs(i,j,board,vis,res,trie.root);
-            }
-        }
-
-        return res;
-    }
-
-    private void dfs(int i , int j ,char[][] board, boolean[][] vis, List<String>res, Node node){
-
-        if (i < 0 || j < 0 || i >= board.length || j >= board[0].length || vis[i][j]) {
-            return;
-        }
-
-        
-
-        char ch = board[i][j];
-
-        if(!node.containsKey(ch)){
-            return;
-        }
-         vis[i][j]= true;
-        node = node.getNode(ch);
-        if(node.word!=null){
-            res.add(node.word);
-            node.setWord(null);
-        }
-
-        for(int k=0;k<4;k++){
-            int idx = rr[k]+i;
-            int idy = cc[k]+j;
-            dfs(idx,idy,board,vis,res,node);
-
-        }
-        vis[i][j]= false;
-
     }
 }
 ```
