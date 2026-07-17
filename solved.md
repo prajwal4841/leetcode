@@ -1,6 +1,6 @@
 # LeetCode Solved Problems — Revision Sheet
 
-**Total: 135**  |  Easy: 32  |  Medium: 90  |  Hard: 13
+**Total: 136**  |  Easy: 33  |  Medium: 90  |  Hard: 13
 
 Each problem is filed under its most specific topic tag (rarest tag it carries).
 
@@ -40,6 +40,7 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Enumeration (1)](#enumeration-1)
 - [Geometry (1)](#geometry-1)
 - [Graph Theory (1)](#graph-theory-1)
+- [Hash Function (1)](#hash-function-1)
 - [Hash Table (1)](#hash-table-1)
 - [Heap (Priority Queue) (1)](#heap-priority-queue-1)
 - [Merge Sort (1)](#merge-sort-1)
@@ -12164,6 +12165,100 @@ class Solution {
 
 ---
 
+## Hash Function (1)
+
+### 🟢 572. Subtree of Another Tree
+
+**Easy** · 🏷️ Tree, Depth-First Search, String Matching, Binary Tree, Hash Function · 📅 2026-03-04
+
+#### 📄 Problem
+
+Given the roots of two binary trees `root` and `subRoot`, return `true` if there is a subtree of `root` with the same structure and node values of` subRoot` and `false` otherwise.
+
+A subtree of a binary tree `tree` is a tree that consists of a node in `tree` and all of this node's descendants. The tree `tree` could also be considered as a subtree of itself.
+
+ 
+
+Example 1:
+
+```
+**Input:** root = [3,4,5,1,2], subRoot = [4,1,2]
+**Output:** true
+```
+
+Example 2:
+
+```
+**Input:** root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]
+**Output:** false
+```
+
+ 
+
+**Constraints:**
+
+	- The number of nodes in the `root` tree is in the range `[1, 2000]`.
+	- The number of nodes in the `subRoot` tree is in the range `[1, 1000]`.
+	- `-10^4 <= root.val <= 10^4`
+	- `-10^4 <= subRoot.val <= 10^4`
+
+#### 💡 Revision note
+
+```text
+Pattern: Tree DFS with identity check
+Key idea: Traverse root tree to find a node whose subtree perfectly matches subRoot's structure and values.
+Complexity: O(m*n) time / O(min(m,n)) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+
+        if(root == null || subRoot == null){
+            return false;
+        }
+        if(root.val == subRoot.val && isIdentical(root,subRoot)){
+            return true;
+        }
+        return isSubtree(root.left,subRoot) || isSubtree(root.right,subRoot);
+    }
+
+    private boolean isIdentical(TreeNode root, TreeNode subtree){
+        if(subtree == null && root == null){
+            return true;
+        }
+        if(subtree == null || root == null){
+            return false;
+        }
+
+        return root.val==subtree.val && 
+        isIdentical(root.left,subtree.left) && 
+        isIdentical(root.right,subtree.right);
+    }
+}
+```
+
+</details>
+
+---
+
 ## Hash Table (1)
 
 ### 🟢 1. Two Sum
@@ -12751,90 +12846,76 @@ class Solution {
 
 ## String Matching (1)
 
-### 🟢 572. Subtree of Another Tree
+### 🟢 1408. String Matching in an Array
 
-**Easy** · 🏷️ Tree, Depth-First Search, String Matching, Binary Tree, Hash Function · 📅 2026-03-04
+**Easy** · 🏷️ Array, String, String Matching · 📅 2026-07-17
 
 #### 📄 Problem
 
-Given the roots of two binary trees `root` and `subRoot`, return `true` if there is a subtree of `root` with the same structure and node values of` subRoot` and `false` otherwise.
-
-A subtree of a binary tree `tree` is a tree that consists of a node in `tree` and all of this node's descendants. The tree `tree` could also be considered as a subtree of itself.
+Given an array of string `words`, return all strings in* *`words`* *that are a substring of another word. You can return the answer in **any order**.
 
  
 
 Example 1:
 
 ```
-**Input:** root = [3,4,5,1,2], subRoot = [4,1,2]
-**Output:** true
+**Input:** words = ["mass","as","hero","superhero"]
+**Output:** ["as","hero"]
+**Explanation:** "as" is substring of "mass" and "hero" is substring of "superhero".
+["hero","as"] is also a valid answer.
 ```
 
 Example 2:
 
 ```
-**Input:** root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]
-**Output:** false
+**Input:** words = ["leetcode","et","code"]
+**Output:** ["et","code"]
+**Explanation:** "et", "code" are substring of "leetcode".
+```
+
+Example 3:
+
+```
+**Input:** words = ["blue","green","bu"]
+**Output:** []
+**Explanation:** No string of words is substring of another string.
 ```
 
  
 
 **Constraints:**
 
-	- The number of nodes in the `root` tree is in the range `[1, 2000]`.
-	- The number of nodes in the `subRoot` tree is in the range `[1, 1000]`.
-	- `-10^4 <= root.val <= 10^4`
-	- `-10^4 <= subRoot.val <= 10^4`
+	- `1 <= words.length <= 100`
+	- `1 <= words[i].length <= 30`
+	- `words[i]` contains only lowercase English letters.
+	- All the strings of `words` are **unique**.
 
 #### 💡 Revision note
 
-```text
-Pattern: Tree DFS with identity check
-Key idea: Traverse root tree to find a node whose subtree perfectly matches subRoot's structure and values.
-Complexity: O(m*n) time / O(min(m,n)) space
-```
+_(not generated yet — run `python3 sync.py` to fill this in)_
 
 <details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
 
 ```java
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode() {}
- *     TreeNode(int val) { this.val = val; }
- *     TreeNode(int val, TreeNode left, TreeNode right) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
- * }
- */
 class Solution {
-    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+    public List<String> stringMatching(String[] words) {
 
-        if(root == null || subRoot == null){
-            return false;
-        }
-        if(root.val == subRoot.val && isIdentical(root,subRoot)){
-            return true;
-        }
-        return isSubtree(root.left,subRoot) || isSubtree(root.right,subRoot);
-    }
-
-    private boolean isIdentical(TreeNode root, TreeNode subtree){
-        if(subtree == null && root == null){
-            return true;
-        }
-        if(subtree == null || root == null){
-            return false;
+        Set<String> set = new HashSet<>();
+        for(int i = 0; i<words.length; i++){
+            for(int j = 0; j<words.length ; j++){
+                if (j == i) continue;
+                if(words[i].contains(words[j])){
+                    set.add(words[j]);
+                }
+            }
         }
 
-        return root.val==subtree.val && 
-        isIdentical(root.left,subtree.left) && 
-        isIdentical(root.right,subtree.right);
+        if("superhero".contains("hero")){
+            System.out.println(true);
+        }
+
+        return new ArrayList<>(set);
+        
     }
 }
 ```
