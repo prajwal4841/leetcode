@@ -1,6 +1,6 @@
 # LeetCode Solved Problems — Revision Sheet
 
-**Total: 136**  |  Easy: 33  |  Medium: 90  |  Hard: 13
+**Total: 137**  |  Easy: 34  |  Medium: 90  |  Hard: 13
 
 Each problem is filed under its most specific topic tag (rarest tag it carries).
 
@@ -21,12 +21,12 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Sorting (4)](#sorting-4)
 - [String (4)](#string-4)
 - [Trie (4)](#trie-4)
+- [Two Pointers (4)](#two-pointers-4)
 - [Union-Find (4)](#union-find-4)
 - [Binary Search Tree (3)](#binary-search-tree-3)
 - [Bit Manipulation (3)](#bit-manipulation-3)
 - [Divide and Conquer (3)](#divide-and-conquer-3)
 - [Math (3)](#math-3)
-- [Two Pointers (3)](#two-pointers-3)
 - [Array (2)](#array-2)
 - [Breadth-First Search (2)](#breadth-first-search-2)
 - [Prefix Sum (2)](#prefix-sum-2)
@@ -8662,6 +8662,345 @@ class Solution {
 
 ---
 
+## Two Pointers (4)
+
+### 🟢 27. Remove Element
+
+**Easy** · 🏷️ Array, Two Pointers · 📅 2026-07-17
+
+#### 📄 Problem
+
+Given an integer array `nums` and an integer `val`, remove all occurrences of `val` in `nums` **in-place**. The order of the elements may be changed. Then return *the number of elements in *`nums`* which are not equal to *`val`.
+
+Consider the number of elements in `nums` which are not equal to `val` be `k`, to get accepted, you need to do the following things:
+
+	- Change the array `nums` such that the first `k` elements of `nums` contain the elements which are not equal to `val`. The remaining elements of `nums` are not important as well as the size of `nums`.
+	- Return `k`.
+
+**Custom Judge:**
+
+The judge will test your solution with the following code:
+
+```
+int[] nums = [...]; // Input array
+int val = ...; // Value to remove
+int[] expectedNums = [...]; // The expected answer with correct length.
+                            // It is sorted with no values equaling val.
+
+int k = removeElement(nums, val); // Calls your implementation
+
+assert k == expectedNums.length;
+sort(nums, 0, k); // Sort the first k elements of nums
+for (int i = 0; i < actualLength; i++) {
+    assert nums[i] == expectedNums[i];
+}
+```
+
+If all assertions pass, then your solution will be **accepted**.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [3,2,2,3], val = 3
+**Output:** 2, nums = [2,2,_,_]
+**Explanation:** Your function should return k = 2, with the first two elements of nums being 2.
+It does not matter what you leave beyond the returned k (hence they are underscores).
+```
+
+Example 2:
+
+```
+**Input:** nums = [0,1,2,2,3,0,4,2], val = 2
+**Output:** 5, nums = [0,1,4,0,3,_,_,_]
+**Explanation:** Your function should return k = 5, with the first five elements of nums containing 0, 0, 1, 3, and 4.
+Note that the five elements can be returned in any order.
+It does not matter what you leave beyond the returned k (hence they are underscores).
+```
+
+ 
+
+**Constraints:**
+
+	- `0 <= nums.length <= 100`
+	- `0 <= nums[i] <= 50`
+	- `0 <= val <= 100`
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int removeElement(int[] nums, int val) {
+
+        int n = nums.length;
+        int i =0;
+        int j = n-1;
+        int ans =0;
+        while(i<=j){
+            if(val == nums[i]){
+                while(j>i && val == nums[j]){
+                    j--;
+                }
+                if (i == j) break;
+                swap(nums,i,j);
+                j--;
+            }
+            i++;
+        }
+        return i;
+    }
+    private void swap(int[] nums , int i ,int j){
+            int temp = nums[i];
+            nums[i]=nums[j];
+            nums[j]=temp;
+    }
+}
+```
+
+</details>
+
+### 🟢 125. Valid Palindrome
+
+**Easy** · 🏷️ Two Pointers, String · 📅 2026-02-28
+
+#### 📄 Problem
+
+A phrase is a **palindrome** if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+
+Given a string `s`, return `true`* if it is a **palindrome**, or *`false`* otherwise*.
+
+ 
+
+Example 1:
+
+```
+**Input:** s = "A man, a plan, a canal: Panama"
+**Output:** true
+**Explanation:** "amanaplanacanalpanama" is a palindrome.
+```
+
+Example 2:
+
+```
+**Input:** s = "race a car"
+**Output:** false
+**Explanation:** "raceacar" is not a palindrome.
+```
+
+Example 3:
+
+```
+**Input:** s = " "
+**Output:** true
+**Explanation:** s is an empty string "" after removing non-alphanumeric characters.
+Since an empty string reads the same forward and backward, it is a palindrome.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= s.length <= 2 * 10^5`
+	- `s` consists only of printable ASCII characters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Two pointers
+Key idea: After filtering non-alphanumeric chars, comparing from both ends inward checks if the cleaned string is symmetric.
+Complexity: O(n) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public boolean isPalindrome(String s) {
+        s = s.toLowerCase();
+        s = s.replaceAll("[^a-z0-9]","");
+        if(s.isEmpty()){
+            return true;
+        }
+
+        System.out.println(s);
+
+        int l =0;
+        int r = s.length()-1;
+        while(l<=r){
+            if(s.charAt(l)!=s.charAt(r)){
+                return false;
+            }
+            l++;
+            r--;
+        }
+        return true;
+    }
+}
+```
+
+</details>
+
+### 🟢 392. Is Subsequence
+
+**Easy** · 🏷️ Two Pointers, String, Dynamic Programming · 📅 2025-08-31
+
+#### 📄 Problem
+
+Given two strings `s` and `t`, return `true`* if *`s`* is a **subsequence** of *`t`*, or *`false`* otherwise*.
+
+A **subsequence** of a string is a new string that is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (i.e., `"ace"` is a subsequence of `"abcde"` while `"aec"` is not).
+
+ 
+
+Example 1:
+
+```
+**Input:** s = "abc", t = "ahbgdc"
+**Output:** true
+```
+Example 2:
+
+```
+**Input:** s = "axc", t = "ahbgdc"
+**Output:** false
+```
+
+ 
+
+**Constraints:**
+
+	- `0 <= s.length <= 100`
+	- `0 <= t.length <= 10^4`
+	- `s` and `t` consist only of lowercase English letters.
+
+ 
+
+**Follow up:** Suppose there are lots of incoming `s`, say `s_1, s_2, ..., s_k` where `k >= 10^9`, and you want to check one by one to see if `t` has its subsequence. In this scenario, how would you change your code?
+
+#### 💡 Revision note
+
+```text
+Pattern: Two pointers
+Key idea: Greedily match each character of s with its earliest occurrence in t, preserving order.
+Complexity: O(n) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public boolean isSubsequence(String s, String t) {
+        int i = 0;int j = 0;
+        while(j<s.length() && i<t.length()){
+            if(s.charAt(j) == t.charAt(i)){
+                j++;
+            }
+            i++;
+        }
+        return j == s.length();
+        
+    }
+   
+   
+}
+```
+
+</details>
+
+### 🟡 5. Longest Palindromic Substring
+
+**Medium** · 🏷️ Two Pointers, String, Dynamic Programming · 📅 2026-02-02
+
+#### 📄 Problem
+
+Given a string `s`, return *the longest* *palindromic* *substring* in `s`.
+
+ 
+
+Example 1:
+
+```
+**Input:** s = "babad"
+**Output:** "bab"
+**Explanation:** "aba" is also a valid answer.
+```
+
+Example 2:
+
+```
+**Input:** s = "cbbd"
+**Output:** "bb"
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= s.length <= 1000`
+	- `s` consist of only digits and English letters.
+
+#### 💡 Revision note
+
+```text
+Pattern: Expand around center
+Key idea: Every palindrome has a center; expand from each position to find the longest one.
+Complexity: O(n²) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public String longestPalindrome(String s) {
+
+        int first = 0;
+        int second = 1;
+        int maxlen = 1;
+
+        for(int i = 0; i<s.length();i++){
+
+            // odd palindrome 
+            int j = i;
+            int k = i;
+            while(j>=0 && k < s.length() && s.charAt(j) == s.charAt(k)){
+
+                if(k-j+1 > maxlen){
+                    first = j;
+                    second = k+1;
+                    maxlen = k-j+1;
+                }
+                j--;
+                k++;
+            }
+
+            //even length
+             j = i;
+             k = i+1;
+            while(j>=0 && k < s.length() && s.charAt(j) == s.charAt(k)){
+
+                if(k-j+1 > maxlen){
+                    first = j;
+                    second = k+1;
+                    maxlen = k-j+1;
+                }
+                j--;
+                k++;
+            }
+        }
+        return s.substring(first,second);
+    }
+}
+```
+
+</details>
+
+---
+
 ## Union-Find (4)
 
 ### 🟡 128. Longest Consecutive Sequence
@@ -10123,245 +10462,6 @@ class Solution {
 
         
         // return res;
-    }
-}
-```
-
-</details>
-
----
-
-## Two Pointers (3)
-
-### 🟢 125. Valid Palindrome
-
-**Easy** · 🏷️ Two Pointers, String · 📅 2026-02-28
-
-#### 📄 Problem
-
-A phrase is a **palindrome** if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
-
-Given a string `s`, return `true`* if it is a **palindrome**, or *`false`* otherwise*.
-
- 
-
-Example 1:
-
-```
-**Input:** s = "A man, a plan, a canal: Panama"
-**Output:** true
-**Explanation:** "amanaplanacanalpanama" is a palindrome.
-```
-
-Example 2:
-
-```
-**Input:** s = "race a car"
-**Output:** false
-**Explanation:** "raceacar" is not a palindrome.
-```
-
-Example 3:
-
-```
-**Input:** s = " "
-**Output:** true
-**Explanation:** s is an empty string "" after removing non-alphanumeric characters.
-Since an empty string reads the same forward and backward, it is a palindrome.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= s.length <= 2 * 10^5`
-	- `s` consists only of printable ASCII characters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Two pointers
-Key idea: After filtering non-alphanumeric chars, comparing from both ends inward checks if the cleaned string is symmetric.
-Complexity: O(n) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public boolean isPalindrome(String s) {
-        s = s.toLowerCase();
-        s = s.replaceAll("[^a-z0-9]","");
-        if(s.isEmpty()){
-            return true;
-        }
-
-        System.out.println(s);
-
-        int l =0;
-        int r = s.length()-1;
-        while(l<=r){
-            if(s.charAt(l)!=s.charAt(r)){
-                return false;
-            }
-            l++;
-            r--;
-        }
-        return true;
-    }
-}
-```
-
-</details>
-
-### 🟢 392. Is Subsequence
-
-**Easy** · 🏷️ Two Pointers, String, Dynamic Programming · 📅 2025-08-31
-
-#### 📄 Problem
-
-Given two strings `s` and `t`, return `true`* if *`s`* is a **subsequence** of *`t`*, or *`false`* otherwise*.
-
-A **subsequence** of a string is a new string that is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (i.e., `"ace"` is a subsequence of `"abcde"` while `"aec"` is not).
-
- 
-
-Example 1:
-
-```
-**Input:** s = "abc", t = "ahbgdc"
-**Output:** true
-```
-Example 2:
-
-```
-**Input:** s = "axc", t = "ahbgdc"
-**Output:** false
-```
-
- 
-
-**Constraints:**
-
-	- `0 <= s.length <= 100`
-	- `0 <= t.length <= 10^4`
-	- `s` and `t` consist only of lowercase English letters.
-
- 
-
-**Follow up:** Suppose there are lots of incoming `s`, say `s_1, s_2, ..., s_k` where `k >= 10^9`, and you want to check one by one to see if `t` has its subsequence. In this scenario, how would you change your code?
-
-#### 💡 Revision note
-
-```text
-Pattern: Two pointers
-Key idea: Greedily match each character of s with its earliest occurrence in t, preserving order.
-Complexity: O(n) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public boolean isSubsequence(String s, String t) {
-        int i = 0;int j = 0;
-        while(j<s.length() && i<t.length()){
-            if(s.charAt(j) == t.charAt(i)){
-                j++;
-            }
-            i++;
-        }
-        return j == s.length();
-        
-    }
-   
-   
-}
-```
-
-</details>
-
-### 🟡 5. Longest Palindromic Substring
-
-**Medium** · 🏷️ Two Pointers, String, Dynamic Programming · 📅 2026-02-02
-
-#### 📄 Problem
-
-Given a string `s`, return *the longest* *palindromic* *substring* in `s`.
-
- 
-
-Example 1:
-
-```
-**Input:** s = "babad"
-**Output:** "bab"
-**Explanation:** "aba" is also a valid answer.
-```
-
-Example 2:
-
-```
-**Input:** s = "cbbd"
-**Output:** "bb"
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= s.length <= 1000`
-	- `s` consist of only digits and English letters.
-
-#### 💡 Revision note
-
-```text
-Pattern: Expand around center
-Key idea: Every palindrome has a center; expand from each position to find the longest one.
-Complexity: O(n²) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public String longestPalindrome(String s) {
-
-        int first = 0;
-        int second = 1;
-        int maxlen = 1;
-
-        for(int i = 0; i<s.length();i++){
-
-            // odd palindrome 
-            int j = i;
-            int k = i;
-            while(j>=0 && k < s.length() && s.charAt(j) == s.charAt(k)){
-
-                if(k-j+1 > maxlen){
-                    first = j;
-                    second = k+1;
-                    maxlen = k-j+1;
-                }
-                j--;
-                k++;
-            }
-
-            //even length
-             j = i;
-             k = i+1;
-            while(j>=0 && k < s.length() && s.charAt(j) == s.charAt(k)){
-
-                if(k-j+1 > maxlen){
-                    first = j;
-                    second = k+1;
-                    maxlen = k-j+1;
-                }
-                j--;
-                k++;
-            }
-        }
-        return s.substring(first,second);
     }
 }
 ```
