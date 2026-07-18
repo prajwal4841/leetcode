@@ -4164,6 +4164,35 @@
       "runtime": 0,
       "memory": 43528000,
       "submitted_at": 1784313872
+    },
+    "unique-email-addresses": {
+      "frontendQuestionId": "929",
+      "title": "Unique Email Addresses",
+      "titleSlug": "unique-email-addresses",
+      "difficulty": "Easy",
+      "acRate": 67.93860771735089,
+      "topicTags": [
+        {
+          "name": "Array",
+          "slug": "array"
+        },
+        {
+          "name": "Hash Table",
+          "slug": "hash-table"
+        },
+        {
+          "name": "String",
+          "slug": "string"
+        }
+      ],
+      "statement_md": "Every **valid email** consists of a **local name** and a **domain name**, separated by the `'@'` sign. Besides lowercase letters, the email may contain one or more `'.'` or `'+'`.\n\n\t- For example, in `\"alice@leetcode.com\"`, `\"alice\"` is the **local name**, and `\"leetcode.com\"` is the **domain name**.\n\nIf you add periods `'.'` between some characters in the **local name** part of an email address, mail sent there will be forwarded to the same address without dots in the local name. Note that this rule **does not apply** to **domain names**.\n\n\t- For example, `\"alice.z@leetcode.com\"` and `\"alicez@leetcode.com\"` forward to the same email address.\n\nIf you add a plus `'+'` in the **local name**, everything after the first plus sign **will be ignored**. This allows certain emails to be filtered. Note that this rule **does not apply** to **domain names**.\n\n\t- For example, `\"m.y+name@email.com\"` will be forwarded to `\"my@email.com\"`.\n\nIt is possible to use both of these rules at the same time.\n\nGiven an array of strings `emails` where we send one email to each `emails[i]`, return *the number of different addresses that actually receive mails*.\n\n\u00a0\n\nExample 1:\n\n```\n**Input:** emails = [\"test.email+alex@leetcode.com\",\"test.e.mail+bob.cathy@leetcode.com\",\"testemail+david@lee.tcode.com\"]\n**Output:** 2\n**Explanation:** \"testemail@leetcode.com\" and \"testemail@lee.tcode.com\" actually receive mails.\n```\n\nExample 2:\n\n```\n**Input:** emails = [\"a@leetcode.com\",\"b@leetcode.com\",\"c@leetcode.com\"]\n**Output:** 3\n```\n\n\u00a0\n\n**Constraints:**\n\n\t- `1 <= emails.length <= 100`\n\t- `1 <= emails[i].length <= 100`\n\t- `emails[i]` consist of lowercase English letters, `'+'`, `'.'` and `'@'`.\n\t- Each `emails[i]` contains exactly one `'@'` character.\n\t- All local and domain names are non-empty.\n\t- Local names do not start with a `'+'` character.\n\t- Domain names end with the `\".com\"` suffix.\n\t- Domain names must contain at least one character before `\".com\"` suffix.",
+      "code": "class Solution {\n    public int numUniqueEmails(String[] emails) {\n\n        Set<String> set = new HashSet<>();\n\n        for( String mail : emails){\n            String[] split = mail.split(\"@\");\n            String localName = split[0].replace(\".\",\"\");\n            int i = localName.indexOf(\"+\");\n            if(i!=-1)\n                localName = localName.substring(0,i);\n           \n            localName = localName.concat(\"@\");\n            String resultName = localName.concat(split[1]);\n            set.add(resultName);\n             System.out.println(resultName);\n        }\n        return set.size();\n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 28,
+      "memory": 47108000,
+      "submitted_at": 1784357262
     }
   }
 }

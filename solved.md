@@ -1,6 +1,6 @@
 # LeetCode Solved Problems — Revision Sheet
 
-**Total: 137**  |  Easy: 34  |  Medium: 90  |  Hard: 13
+**Total: 138**  |  Easy: 35  |  Medium: 90  |  Hard: 13
 
 Each problem is filed under its most specific topic tag (rarest tag it carries).
 
@@ -29,6 +29,7 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Math (3)](#math-3)
 - [Array (2)](#array-2)
 - [Breadth-First Search (2)](#breadth-first-search-2)
+- [Hash Table (2)](#hash-table-2)
 - [Prefix Sum (2)](#prefix-sum-2)
 - [Stack (2)](#stack-2)
 - [Topological Sort (2)](#topological-sort-2)
@@ -41,7 +42,6 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Geometry (1)](#geometry-1)
 - [Graph Theory (1)](#graph-theory-1)
 - [Hash Function (1)](#hash-function-1)
-- [Hash Table (1)](#hash-table-1)
 - [Heap (Priority Queue) (1)](#heap-priority-queue-1)
 - [Merge Sort (1)](#merge-sort-1)
 - [Number Theory (1)](#number-theory-1)
@@ -10800,6 +10800,171 @@ class Solution {
 
 ---
 
+## Hash Table (2)
+
+### 🟢 1. Two Sum
+
+**Easy** · 🏷️ Array, Hash Table · 📅 2025-11-01
+
+#### 📄 Problem
+
+Given an array of integers `nums` and an integer `target`, return *indices of the two numbers such that they add up to `target`*.
+
+You may assume that each input would have ***exactly* one solution**, and you may not use the *same* element twice.
+
+You can return the answer in any order.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [2,7,11,15], target = 9
+**Output:** [0,1]
+**Explanation:** Because nums[0] + nums[1] == 9, we return [0, 1].
+```
+
+Example 2:
+
+```
+**Input:** nums = [3,2,4], target = 6
+**Output:** [1,2]
+```
+
+Example 3:
+
+```
+**Input:** nums = [3,3], target = 6
+**Output:** [0,1]
+```
+
+ 
+
+**Constraints:**
+
+	- `2 <= nums.length <= 10^4`
+	- `-10^9 <= nums[i] <= 10^9`
+	- `-10^9 <= target <= 10^9`
+	- **Only one valid answer exists.**
+
+ 
+
+**Follow-up: **Can you come up with an algorithm that is less than `O(n^2)` time complexity?
+
+#### 💡 Revision note
+
+```text
+Pattern: Brute force
+Key idea: Check all pairs until finding the sum that equals target.
+Complexity: O(n²) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+
+        for(int i = 0;i<n ;i++){
+            for(int j = i+1;j<n;j++){
+                if(nums[i]+nums[j]==target){
+                    return new int[]{i,j};
+                }
+            }
+        }
+        return new int[]{-1};
+    }
+}
+```
+
+</details>
+
+### 🟢 929. Unique Email Addresses
+
+**Easy** · 🏷️ Array, Hash Table, String · 📅 2026-07-18
+
+#### 📄 Problem
+
+Every **valid email** consists of a **local name** and a **domain name**, separated by the `'@'` sign. Besides lowercase letters, the email may contain one or more `'.'` or `'+'`.
+
+	- For example, in `"alice@leetcode.com"`, `"alice"` is the **local name**, and `"leetcode.com"` is the **domain name**.
+
+If you add periods `'.'` between some characters in the **local name** part of an email address, mail sent there will be forwarded to the same address without dots in the local name. Note that this rule **does not apply** to **domain names**.
+
+	- For example, `"alice.z@leetcode.com"` and `"alicez@leetcode.com"` forward to the same email address.
+
+If you add a plus `'+'` in the **local name**, everything after the first plus sign **will be ignored**. This allows certain emails to be filtered. Note that this rule **does not apply** to **domain names**.
+
+	- For example, `"m.y+name@email.com"` will be forwarded to `"my@email.com"`.
+
+It is possible to use both of these rules at the same time.
+
+Given an array of strings `emails` where we send one email to each `emails[i]`, return *the number of different addresses that actually receive mails*.
+
+ 
+
+Example 1:
+
+```
+**Input:** emails = ["test.email+alex@leetcode.com","test.e.mail+bob.cathy@leetcode.com","testemail+david@lee.tcode.com"]
+**Output:** 2
+**Explanation:** "testemail@leetcode.com" and "testemail@lee.tcode.com" actually receive mails.
+```
+
+Example 2:
+
+```
+**Input:** emails = ["a@leetcode.com","b@leetcode.com","c@leetcode.com"]
+**Output:** 3
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= emails.length <= 100`
+	- `1 <= emails[i].length <= 100`
+	- `emails[i]` consist of lowercase English letters, `'+'`, `'.'` and `'@'`.
+	- Each `emails[i]` contains exactly one `'@'` character.
+	- All local and domain names are non-empty.
+	- Local names do not start with a `'+'` character.
+	- Domain names end with the `".com"` suffix.
+	- Domain names must contain at least one character before `".com"` suffix.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int numUniqueEmails(String[] emails) {
+
+        Set<String> set = new HashSet<>();
+
+        for( String mail : emails){
+            String[] split = mail.split("@");
+            String localName = split[0].replace(".","");
+            int i = localName.indexOf("+");
+            if(i!=-1)
+                localName = localName.substring(0,i);
+           
+            localName = localName.concat("@");
+            String resultName = localName.concat(split[1]);
+            set.add(resultName);
+             System.out.println(resultName);
+        }
+        return set.size();
+    }
+}
+```
+
+</details>
+
+---
+
 ## Prefix Sum (2)
 
 ### 🟡 238. Product of Array Except Self
@@ -12351,88 +12516,6 @@ class Solution {
         return root.val==subtree.val && 
         isIdentical(root.left,subtree.left) && 
         isIdentical(root.right,subtree.right);
-    }
-}
-```
-
-</details>
-
----
-
-## Hash Table (1)
-
-### 🟢 1. Two Sum
-
-**Easy** · 🏷️ Array, Hash Table · 📅 2025-11-01
-
-#### 📄 Problem
-
-Given an array of integers `nums` and an integer `target`, return *indices of the two numbers such that they add up to `target`*.
-
-You may assume that each input would have ***exactly* one solution**, and you may not use the *same* element twice.
-
-You can return the answer in any order.
-
- 
-
-Example 1:
-
-```
-**Input:** nums = [2,7,11,15], target = 9
-**Output:** [0,1]
-**Explanation:** Because nums[0] + nums[1] == 9, we return [0, 1].
-```
-
-Example 2:
-
-```
-**Input:** nums = [3,2,4], target = 6
-**Output:** [1,2]
-```
-
-Example 3:
-
-```
-**Input:** nums = [3,3], target = 6
-**Output:** [0,1]
-```
-
- 
-
-**Constraints:**
-
-	- `2 <= nums.length <= 10^4`
-	- `-10^9 <= nums[i] <= 10^9`
-	- `-10^9 <= target <= 10^9`
-	- **Only one valid answer exists.**
-
- 
-
-**Follow-up: **Can you come up with an algorithm that is less than `O(n^2)` time complexity?
-
-#### 💡 Revision note
-
-```text
-Pattern: Brute force
-Key idea: Check all pairs until finding the sum that equals target.
-Complexity: O(n²) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        int n = nums.length;
-
-        for(int i = 0;i<n ;i++){
-            for(int j = i+1;j<n;j++){
-                if(nums[i]+nums[j]==target){
-                    return new int[]{i,j};
-                }
-            }
-        }
-        return new int[]{-1};
     }
 }
 ```
