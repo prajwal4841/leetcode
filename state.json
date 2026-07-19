@@ -4193,6 +4193,56 @@
       "runtime": 28,
       "memory": 47108000,
       "submitted_at": 1784357262
+    },
+    "isomorphic-strings": {
+      "frontendQuestionId": "205",
+      "title": "Isomorphic Strings",
+      "titleSlug": "isomorphic-strings",
+      "difficulty": "Easy",
+      "acRate": 48.718328759729935,
+      "topicTags": [
+        {
+          "name": "Hash Table",
+          "slug": "hash-table"
+        },
+        {
+          "name": "String",
+          "slug": "string"
+        }
+      ],
+      "statement_md": "Given two strings `s` and `t`, *determine if they are isomorphic*.\n\nTwo strings `s` and `t` are isomorphic if the characters in `s` can be replaced to get `t`.\n\nAll occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character, but a character may map to itself.\n\n\u00a0\n\nExample 1:\n\n**Input:** s = \"egg\", t = \"add\"\n\n**Output:** true\n\n**Explanation:**\n\nThe strings `s` and `t` can be made identical by:\n\n\t- Mapping `'e'` to `'a'`.\n\t- Mapping `'g'` to `'d'`.\n\nExample 2:\n\n**Input:** s = \"f11\", t = \"b23\"\n\n**Output:** false\n\n**Explanation:**\n\nThe strings `s` and `t` can not be made identical as `'1'` needs to be mapped to both `'2'` and `'3'`.\n\nExample 3:\n\n**Input:** s = \"paper\", t = \"title\"\n\n**Output:** true\n\n\u00a0\n\n**Constraints:**\n\n\t- `1 <= s.length <= 5 * 10^4`\n\t- `t.length == s.length`\n\t- `s` and `t` consist of any valid ascii character.",
+      "code": "class Solution {\n    public boolean isIsomorphic(String s, String t) {\n\n        Map<Character,Character> map1 = new HashMap<>();\n        Map<Character,Character> map2 = new HashMap<>();\n\n        if(s.length() != t.length()){\n            return false;\n        }\n\n        int n = s.length();\n        for(int i = 0; i<n; i++){\n            if(map1.get(s.charAt(i)) != null ){\n                if(map1.get(s.charAt(i)) != t.charAt(i)){\n                    return false;\n                }\n            }\n            if(map2.get(t.charAt(i)) !=null){\n                if( map2.get(t.charAt(i)) != s.charAt(i)){\n                    return false;\n                }\n            }\n\n            map1.put(s.charAt(i),t.charAt(i));\n            map2.put(t.charAt(i),s.charAt(i));\n        }\n        return true;\n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 35,
+      "memory": 44096000,
+      "submitted_at": 1784479610
+    },
+    "can-place-flowers": {
+      "frontendQuestionId": "605",
+      "title": "Can Place Flowers",
+      "titleSlug": "can-place-flowers",
+      "difficulty": "Easy",
+      "acRate": 29.22797509844089,
+      "topicTags": [
+        {
+          "name": "Array",
+          "slug": "array"
+        },
+        {
+          "name": "Greedy",
+          "slug": "greedy"
+        }
+      ],
+      "statement_md": "You have a long flowerbed in which some of the plots are planted, and some are not. However, flowers cannot be planted in **adjacent** plots.\n\nGiven an integer array `flowerbed` containing `0`'s and `1`'s, where `0` means empty and `1` means not empty, and an integer `n`, return `true`\u00a0*if* `n` *new flowers can be planted in the* `flowerbed` *without violating the no-adjacent-flowers rule and* `false` *otherwise*.\n\n\u00a0\n\nExample 1:\n\n```\n**Input:** flowerbed = [1,0,0,0,1], n = 1\n**Output:** true\n```\nExample 2:\n\n```\n**Input:** flowerbed = [1,0,0,0,1], n = 2\n**Output:** false\n```\n\n\u00a0\n\n**Constraints:**\n\n\t- `1 <= flowerbed.length <= 2 * 10^4`\n\t- `flowerbed[i]` is `0` or `1`.\n\t- There are no two adjacent flowers in `flowerbed`.\n\t- `0 <= n <= flowerbed.length`",
+      "code": "class Solution {\n    public boolean canPlaceFlowers(int[] flowerbed, int m) {\n        \n        int n = flowerbed.length;\n        if(n==1){\n            // return flowerbed[0] == m;\n            return (flowerbed[0]==0 && m == 1) || \n            (flowerbed[0]==1 && m == 0) || \n            (flowerbed[0]==0 && m == 0);\n        }\n        // if(n<3){\n        //     return false;\n        // }\n        int ans = 0;\n\n        if(flowerbed[0] == 0 && flowerbed[1]==0){\n            ans++;\n            flowerbed[0]=1;\n        }\n        if(flowerbed[n-1] == 0 && flowerbed[n-2]==0){\n            ans++;\n            flowerbed[n-1]=1;\n        }\n        for(int i = 1;i<n-1; i++){\n            // if(flowerbed[i] == 1){\n            //     if(flowerbed[i-1] == 0 && flowerbed[i+1]==0){\n            //         ans++;\n            //         flowerbed[i]=1;\n            //     }\n            // }\n            if(flowerbed[i] == 0){\n                if(flowerbed[i-1] == 0 && flowerbed[i+1] == 0){\n                    ans++;\n                    flowerbed[i]=1;\n                }\n            }\n        }\n\n        System.out.println(ans);\n\n        return m<=ans;\n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 3,
+      "memory": 47604000,
+      "submitted_at": 1784482155
     }
   }
 }

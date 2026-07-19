@@ -1,6 +1,6 @@
 # LeetCode Solved Problems — Revision Sheet
 
-**Total: 138**  |  Easy: 35  |  Medium: 90  |  Hard: 13
+**Total: 140**  |  Easy: 37  |  Medium: 90  |  Hard: 13
 
 Each problem is filed under its most specific topic tag (rarest tag it carries).
 
@@ -8,9 +8,9 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 
 - [Tree (10)](#tree-10)
 - [Dynamic Programming (9)](#dynamic-programming-9)
+- [Greedy (9)](#greedy-9)
 - [Backtracking (8)](#backtracking-8)
 - [Binary Search (8)](#binary-search-8)
-- [Greedy (8)](#greedy-8)
 - [Matrix (7)](#matrix-7)
 - [Database (5)](#database-5)
 - [Monotonic Stack (5)](#monotonic-stack-5)
@@ -26,10 +26,10 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Binary Search Tree (3)](#binary-search-tree-3)
 - [Bit Manipulation (3)](#bit-manipulation-3)
 - [Divide and Conquer (3)](#divide-and-conquer-3)
+- [Hash Table (3)](#hash-table-3)
 - [Math (3)](#math-3)
 - [Array (2)](#array-2)
 - [Breadth-First Search (2)](#breadth-first-search-2)
-- [Hash Table (2)](#hash-table-2)
 - [Prefix Sum (2)](#prefix-sum-2)
 - [Stack (2)](#stack-2)
 - [Topological Sort (2)](#topological-sort-2)
@@ -1859,6 +1859,765 @@ class Solution {
 
 ---
 
+## Greedy (9)
+
+### 🟢 605. Can Place Flowers
+
+**Easy** · 🏷️ Array, Greedy · 📅 2026-07-19
+
+#### 📄 Problem
+
+You have a long flowerbed in which some of the plots are planted, and some are not. However, flowers cannot be planted in **adjacent** plots.
+
+Given an integer array `flowerbed` containing `0`'s and `1`'s, where `0` means empty and `1` means not empty, and an integer `n`, return `true` *if* `n` *new flowers can be planted in the* `flowerbed` *without violating the no-adjacent-flowers rule and* `false` *otherwise*.
+
+ 
+
+Example 1:
+
+```
+**Input:** flowerbed = [1,0,0,0,1], n = 1
+**Output:** true
+```
+Example 2:
+
+```
+**Input:** flowerbed = [1,0,0,0,1], n = 2
+**Output:** false
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= flowerbed.length <= 2 * 10^4`
+	- `flowerbed[i]` is `0` or `1`.
+	- There are no two adjacent flowers in `flowerbed`.
+	- `0 <= n <= flowerbed.length`
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public boolean canPlaceFlowers(int[] flowerbed, int m) {
+        
+        int n = flowerbed.length;
+        if(n==1){
+            // return flowerbed[0] == m;
+            return (flowerbed[0]==0 && m == 1) || 
+            (flowerbed[0]==1 && m == 0) || 
+            (flowerbed[0]==0 && m == 0);
+        }
+        // if(n<3){
+        //     return false;
+        // }
+        int ans = 0;
+
+        if(flowerbed[0] == 0 && flowerbed[1]==0){
+            ans++;
+            flowerbed[0]=1;
+        }
+        if(flowerbed[n-1] == 0 && flowerbed[n-2]==0){
+            ans++;
+            flowerbed[n-1]=1;
+        }
+        for(int i = 1;i<n-1; i++){
+            // if(flowerbed[i] == 1){
+            //     if(flowerbed[i-1] == 0 && flowerbed[i+1]==0){
+            //         ans++;
+            //         flowerbed[i]=1;
+            //     }
+            // }
+            if(flowerbed[i] == 0){
+                if(flowerbed[i-1] == 0 && flowerbed[i+1] == 0){
+                    ans++;
+                    flowerbed[i]=1;
+                }
+            }
+        }
+
+        System.out.println(ans);
+
+        return m<=ans;
+    }
+}
+```
+
+</details>
+
+### 🟡 11. Container With Most Water
+
+**Medium** · 🏷️ Array, Two Pointers, Greedy · 📅 2025-11-04
+
+#### 📄 Problem
+
+You are given an integer array `height` of length `n`. There are `n` vertical lines drawn such that the two endpoints of the `i^th` line are `(i, 0)` and `(i, height[i])`.
+
+Find two lines that together with the x-axis form a container, such that the container contains the most water.
+
+Return *the maximum amount of water a container can store*.
+
+**Notice** that you may not slant the container.
+
+ 
+
+Example 1:
+
+```
+**Input:** height = [1,8,6,2,5,4,8,3,7]
+**Output:** 49
+**Explanation:** The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.
+```
+
+Example 2:
+
+```
+**Input:** height = [1,1]
+**Output:** 1
+```
+
+ 
+
+**Constraints:**
+
+	- `n == height.length`
+	- `2 <= n <= 10^5`
+	- `0 <= height[i] <= 10^4`
+
+#### 💡 Revision note
+
+```text
+Pattern: Two pointers
+Key idea: Start with maximum width; move the shorter boundary inward since moving the taller one can't increase area.
+Complexity: O(n) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int maxArea(int[] arr) {
+        int n = arr.length;
+        int r = n-1;
+        int l = 0;
+        int ans = 0;
+        while(l<=r){
+            if(arr[l]>arr[r]){
+                int index = r-l;
+                ans = Integer.max(ans, arr[r]*index);
+                r--;
+            }else{
+                int index = r-l;
+                ans = Integer.max(ans,arr[l]*index);
+                l++;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+</details>
+
+### 🟡 45. Jump Game II
+
+**Medium** · 🏷️ Array, Dynamic Programming, Greedy · 📅 2026-06-13
+
+#### 📄 Problem
+
+You are given a **0-indexed** array of integers `nums` of length `n`. You are initially positioned at index 0.
+
+Each element `nums[i]` represents the maximum length of a forward jump from index `i`. In other words, if you are at index `i`, you can jump to any index `(i + j)` where:
+
+	- `0 <= j <= nums[i]` and
+	- `i + j < n`
+
+Return *the minimum number of jumps to reach index *`n - 1`. The test cases are generated such that you can reach index `n - 1`.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [2,3,1,1,4]
+**Output:** 2
+**Explanation:** The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
+```
+
+Example 2:
+
+```
+**Input:** nums = [2,3,0,1,4]
+**Output:** 2
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= nums.length <= 10^4`
+	- `0 <= nums[i] <= 1000`
+	- It's guaranteed that you can reach `nums[n - 1]`.
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memo
+Key idea: Minimum jumps from position i equals one plus the minimum from all reachable positions.
+Complexity: O(n²) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+   
+    public int jump(int[] nums) {
+        int[] val = new int[nums.length];
+        Arrays.fill(val,-1);
+        return countJump(0,nums,val);
+        
+    }
+
+    private int countJump(int i ,  int[] nums, int[] val){
+
+        if(i >=nums.length-1){
+            return 0;
+        }
+
+       if(val[i]!=-1){
+            return val[i];
+       }
+        int min = 1000000;
+
+       for(int k = 1;k<=nums[i];k++){
+            min= Math.min(min,1+countJump(i+k,nums,val));
+       }
+       return val[i]=min;
+
+    }
+}
+```
+
+</details>
+
+### 🟡 55. Jump Game
+
+**Medium** · 🏷️ Array, Dynamic Programming, Greedy · 📅 2026-06-13
+
+#### 📄 Problem
+
+You are given an integer array `nums`. You are initially positioned at the array's **first index**, and each element in the array represents your maximum jump length at that position.
+
+Return `true`* if you can reach the last index, or *`false`* otherwise*.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [2,3,1,1,4]
+**Output:** true
+**Explanation:** Jump 1 step from index 0 to 1, then 3 steps to the last index.
+```
+
+Example 2:
+
+```
+**Input:** nums = [3,2,1,0,4]
+**Output:** false
+**Explanation:** You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= nums.length <= 10^4`
+	- `0 <= nums[i] <= 10^5`
+
+#### 💡 Revision note
+
+```text
+Pattern: Top-down DP with memo
+Key idea: Memoize reachability from each position and short-circuit upon finding any valid jump path to the end.
+Complexity: O(n²) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public boolean canJump(int[] nums) {
+
+        Boolean[] val = new Boolean[nums.length];
+
+        return checkJump(0,nums,val);
+        
+    }
+
+    private boolean checkJump(int i , int[] nums,Boolean[] val){
+
+        if(i >= nums.length-1){
+            return true;
+        }
+
+        if (nums[i]==0){
+            return false;
+        }
+        if(val[i]!=null){
+            return val[i];
+        }
+
+        for(int j = 1;j<=nums[i];j++){
+            if(checkJump(i+j,nums,val)){
+                return val[i]=true;
+            }
+        }
+
+        return val[i]=false;
+    }
+}
+```
+
+</details>
+
+### 🟡 122. Best Time to Buy and Sell Stock II
+
+**Medium** · 🏷️ Array, Dynamic Programming, Greedy · 📅 2026-07-11
+
+#### 📄 Problem
+
+You are given an integer array `prices` where `prices[i]` is the price of a given stock on the `i^th` day.
+
+On each day, you may decide to buy and/or sell the stock. You can only hold **at most one** share of the stock at any time. However, you can sell and buy the stock multiple times on the **same day**, ensuring you never hold more than one share of the stock.
+
+Find and return *the **maximum** profit you can achieve*.
+
+ 
+
+Example 1:
+
+```
+**Input:** prices = [7,1,5,3,6,4]
+**Output:** 7
+**Explanation:** Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+Total profit is 4 + 3 = 7.
+```
+
+Example 2:
+
+```
+**Input:** prices = [1,2,3,4,5]
+**Output:** 4
+**Explanation:** Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+Total profit is 4.
+```
+
+Example 3:
+
+```
+**Input:** prices = [7,6,4,3,1]
+**Output:** 0
+**Explanation:** There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= prices.length <= 3 * 10^4`
+	- `0 <= prices[i] <= 10^4`
+
+#### 💡 Revision note
+
+```text
+Pattern: Greedy peak capture
+Key idea: With unlimited free transactions, sum every consecutive daily price increase.
+Complexity: O(n) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int maxProfit(int[] arr) {   
+
+        int ans =0;
+        for(int i =1 ;i<arr.length;i++) {
+            if(arr[i-1]<arr[i]){
+                ans = ans + arr[i]-arr[i-1];
+            }
+        }
+        return ans;
+    }
+
+
+    private int findmax(int i, int buy, int[] arr, int[][] dp){
+        if( i == arr.length){
+            return 0;
+        }
+
+        if(dp[i][buy] != -1){
+            return dp[i][buy];
+        }
+        int profit = 0;
+        if(buy == 1){
+            profit = Integer.max(-arr[i]+findmax(i+1,0,arr,dp) , 0 + findmax(i+1,1,arr,dp));
+        }else{
+            profit = Integer.max(arr[i]+findmax(i+1,1,arr,dp) , 0 + findmax(i+1,0,arr,dp));
+        }
+        return dp[i][buy] = profit;
+    }
+
+  
+}
+```
+
+</details>
+
+### 🟡 134. Gas Station
+
+**Medium** · 🏷️ Array, Greedy · 📅 2025-12-04
+
+#### 📄 Problem
+
+There are `n` gas stations along a circular route, where the amount of gas at the `i^th` station is `gas[i]`.
+
+You have a car with an unlimited gas tank and it costs `cost[i]` of gas to travel from the `i^th` station to its next `(i + 1)^th` station. You begin the journey with an empty tank at one of the gas stations.
+
+Given two integer arrays `gas` and `cost`, return *the starting gas station's index if you can travel around the circuit once in the clockwise direction, otherwise return* `-1`. If there exists a solution, it is **guaranteed** to be **unique**.
+
+ 
+
+Example 1:
+
+```
+**Input:** gas = [1,2,3,4,5], cost = [3,4,5,1,2]
+**Output:** 3
+**Explanation:**
+Start at station 3 (index 3) and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
+Travel to station 4. Your tank = 4 - 1 + 5 = 8
+Travel to station 0. Your tank = 8 - 2 + 1 = 7
+Travel to station 1. Your tank = 7 - 3 + 2 = 6
+Travel to station 2. Your tank = 6 - 4 + 3 = 5
+Travel to station 3. The cost is 5. Your gas is just enough to travel back to station 3.
+Therefore, return 3 as the starting index.
+```
+
+Example 2:
+
+```
+**Input:** gas = [2,3,4], cost = [3,4,3]
+**Output:** -1
+**Explanation:**
+You can't start at station 0 or 1, as there is not enough gas to travel to the next station.
+Let's start at station 2 and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
+Travel to station 0. Your tank = 4 - 3 + 2 = 3
+Travel to station 1. Your tank = 3 - 3 + 3 = 3
+You cannot travel back to station 2, as it requires 4 unit of gas but you only have 3.
+Therefore, you can't travel around the circuit once no matter where you start.
+```
+
+ 
+
+**Constraints:**
+
+	- `n == gas.length == cost.length`
+	- `1 <= n <= 10^5`
+	- `0 <= gas[i], cost[i] <= 10^4`
+	- The input is generated such that the answer is unique.
+
+#### 💡 Revision note
+
+```text
+Pattern: Single-pass greedy
+Key idea: If total balance ≥ 0, solution exists. When balance goes negative, all prior starts fail—skip to next candidate.
+Complexity: O(n) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int total = 0;
+        int starting = 0;
+        int remain = 0;
+        int n = gas.length;
+
+        for(int i=0; i<n; i++){
+            total = total + gas[i] - cost[i];
+            remain = remain + gas[i] - cost[i];
+            if(remain<0){
+                remain = 0;
+                starting=i+1;
+            }
+        }
+        if(total<0){
+            return -1;
+        }
+
+        return starting;
+        
+    }
+}
+```
+
+</details>
+
+### 🟡 846. Hand of Straights
+
+**Medium** · 🏷️ Array, Hash Table, Greedy, Sorting · 📅 2022-09-09
+
+#### 📄 Problem
+
+Alice has some number of cards and she wants to rearrange the cards into groups so that each group is of size `groupSize`, and consists of `groupSize` consecutive cards.
+
+Given an integer array `hand` where `hand[i]` is the value written on the `i^th` card and an integer `groupSize`, return `true` if she can rearrange the cards, or `false` otherwise.
+
+ 
+
+Example 1:
+
+```
+**Input:** hand = [1,2,3,6,2,3,4,7,8], groupSize = 3
+**Output:** true
+**Explanation:** Alice's hand can be rearranged as [1,2,3],[2,3,4],[6,7,8]
+```
+
+Example 2:
+
+```
+**Input:** hand = [1,2,3,4,5], groupSize = 4
+**Output:** false
+**Explanation:** Alice's hand can not be rearranged into groups of 4.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= hand.length <= 10^4`
+	- `0 <= hand[i] <= 10^9`
+	- `1 <= groupSize <= hand.length`
+
+ 
+
+**Note:** This question is the same as 1296: https://leetcode.com/problems/divide-array-in-sets-of-k-consecutive-numbers/
+
+#### 💡 Revision note
+
+```text
+Pattern: Greedy with sorted counter
+Key idea: Process smallest cards first, greedily forming groups; any gap in consecutive requirements means no solution.
+Complexity: O(n log n) time / O(n) space
+```
+
+<details><summary><b>🧩 Solution (Python) — click to expand</b></summary>
+
+```python
+class Solution:
+    def isNStraightHand(self, hand, groupSize) :
+        if len(hand) % groupSize != 0:
+            return False
+        
+        count = collections.Counter(hand)
+        keys = sorted(list(count.keys()))
+        
+        for card in keys:
+            if count[card] == 0:
+                continue
+            total = count[card]
+            for n in range(card + 1, card + groupSize):
+                count[n] -= total
+                if count[n] < 0:
+                    return False
+            count[card] -= total
+        
+        return True
+```
+
+</details>
+
+### 🟡 2486. Append Characters to String to Make Subsequence
+
+**Medium** · 🏷️ Two Pointers, String, Greedy · 📅 2026-07-12
+
+#### 📄 Problem
+
+You are given two strings `s` and `t` consisting of only lowercase English letters.
+
+Return *the minimum number of characters that need to be appended to the end of *`s`* so that *`t`* becomes a **subsequence** of *`s`.
+
+A **subsequence** is a string that can be derived from another string by deleting some or no characters without changing the order of the remaining characters.
+
+ 
+
+Example 1:
+
+```
+**Input:** s = "coaching", t = "coding"
+**Output:** 4
+**Explanation:** Append the characters "ding" to the end of s so that s = "coachingding".
+Now, t is a subsequence of s ("**co**aching**ding**").
+It can be shown that appending any 3 characters to the end of s will never make t a subsequence.
+```
+
+Example 2:
+
+```
+**Input:** s = "abcde", t = "a"
+**Output:** 0
+**Explanation:** t is already a subsequence of s ("**a**bcde").
+```
+
+Example 3:
+
+```
+**Input:** s = "z", t = "abcde"
+**Output:** 5
+**Explanation:** Append the characters "abcde" to the end of s so that s = "zabcde".
+Now, t is a subsequence of s ("z**abcde**").
+It can be shown that appending any 4 characters to the end of s will never make t a subsequence.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= s.length, t.length <= 10^5`
+	- `s` and `t` consist only of lowercase English letters.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int appendCharacters(String s, String t) {
+         int n = s.length();
+        int m = t.length();
+        int i = 0;
+        int j = 0;
+
+        while(i<n && j<m){
+            if(s.charAt(i) == t.charAt(j)){
+                j++;
+            }
+            i++;
+        }
+        System.out.println(j);
+        return Integer.max(0,t.length()-j);
+    }
+}
+```
+
+</details>
+
+### 🟡 2966. Divide Array Into Arrays With Max Difference
+
+**Medium** · 🏷️ Array, Greedy, Sorting · 📅 2024-02-01
+
+#### 📄 Problem
+
+You are given an integer array `nums` of size `n` where `n` is a multiple of 3 and a positive integer `k`.
+
+Divide the array `nums` into `n / 3` arrays of size **3** satisfying the following condition:
+
+	- The difference between **any** two elements in one array is **less than or equal** to `k`.
+
+Return a **2D** array containing the arrays. If it is impossible to satisfy the conditions, return an empty array. And if there are multiple answers, return **any** of them.
+
+ 
+
+Example 1:
+
+**Input:** nums = [1,3,4,8,7,9,3,5,1], k = 2
+
+**Output:** [[1,1,3],[3,4,5],[7,8,9]]
+
+**Explanation:**
+
+The difference between any two elements in each array is less than or equal to 2.
+
+Example 2:
+
+**Input:** nums = [2,4,2,2,5,2], k = 2
+
+**Output:** []
+
+**Explanation:**
+
+Different ways to divide `nums` into 2 arrays of size 3 are:
+
+	- [[2,2,2],[2,4,5]] (and its permutations)
+	- [[2,2,4],[2,2,5]] (and its permutations)
+
+Because there are four 2s there will be an array with the elements 2 and 5 no matter how we divide it. since `5 - 2 = 3 > k`, the condition is not satisfied and so there is no valid division.
+
+Example 3:
+
+**Input:** nums = [4,2,9,8,2,12,7,12,10,5,8,5,5,7,9,2,5,11], k = 14
+
+**Output:** [[2,2,2],[4,5,5],[5,5,7],[7,8,8],[9,9,10],[11,12,12]]
+
+**Explanation:**
+
+The difference between any two elements in each array is less than or equal to 14.
+
+ 
+
+**Constraints:**
+
+	- `n == nums.length`
+	- `1 <= n <= 10^5`
+	- `n `is a multiple of 3
+	- `1 <= nums[i] <= 10^5`
+	- `1 <= k <= 10^5`
+
+#### 💡 Revision note
+
+```text
+Pattern: Greedy sorting
+Key idea: Consecutive triplets in sorted array minimize max-min; if any triplet exceeds k, no valid division exists.
+Complexity: O(n log n) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+import java.util.Arrays;
+class Solution {
+    public int[][] divideArray(int[] nums, int k) {
+          int len = nums.length;
+        int[][] res = new int[len/3][3];
+        Arrays.sort(nums);
+        for(int i=0,m=0; i<len; i=i+3,m++){
+            res[m][0] = nums[i];
+            for(int j=1; j<3; j++){
+                if(nums[i+j]-res[m][0]<=k){
+                    res[m][j]=nums[i+j];
+                } else{
+                    return new int[0][0];
+                }
+            }
+        }
+        return res;
+}}
+```
+
+</details>
+
+---
+
 ## Backtracking (8)
 
 ### 🟡 17. Letter Combinations of a Phone Number
@@ -3290,677 +4049,6 @@ class Solution {
         return false;
     }
 }
-```
-
-</details>
-
----
-
-## Greedy (8)
-
-### 🟡 11. Container With Most Water
-
-**Medium** · 🏷️ Array, Two Pointers, Greedy · 📅 2025-11-04
-
-#### 📄 Problem
-
-You are given an integer array `height` of length `n`. There are `n` vertical lines drawn such that the two endpoints of the `i^th` line are `(i, 0)` and `(i, height[i])`.
-
-Find two lines that together with the x-axis form a container, such that the container contains the most water.
-
-Return *the maximum amount of water a container can store*.
-
-**Notice** that you may not slant the container.
-
- 
-
-Example 1:
-
-```
-**Input:** height = [1,8,6,2,5,4,8,3,7]
-**Output:** 49
-**Explanation:** The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.
-```
-
-Example 2:
-
-```
-**Input:** height = [1,1]
-**Output:** 1
-```
-
- 
-
-**Constraints:**
-
-	- `n == height.length`
-	- `2 <= n <= 10^5`
-	- `0 <= height[i] <= 10^4`
-
-#### 💡 Revision note
-
-```text
-Pattern: Two pointers
-Key idea: Start with maximum width; move the shorter boundary inward since moving the taller one can't increase area.
-Complexity: O(n) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int maxArea(int[] arr) {
-        int n = arr.length;
-        int r = n-1;
-        int l = 0;
-        int ans = 0;
-        while(l<=r){
-            if(arr[l]>arr[r]){
-                int index = r-l;
-                ans = Integer.max(ans, arr[r]*index);
-                r--;
-            }else{
-                int index = r-l;
-                ans = Integer.max(ans,arr[l]*index);
-                l++;
-            }
-        }
-        return ans;
-    }
-}
-```
-
-</details>
-
-### 🟡 45. Jump Game II
-
-**Medium** · 🏷️ Array, Dynamic Programming, Greedy · 📅 2026-06-13
-
-#### 📄 Problem
-
-You are given a **0-indexed** array of integers `nums` of length `n`. You are initially positioned at index 0.
-
-Each element `nums[i]` represents the maximum length of a forward jump from index `i`. In other words, if you are at index `i`, you can jump to any index `(i + j)` where:
-
-	- `0 <= j <= nums[i]` and
-	- `i + j < n`
-
-Return *the minimum number of jumps to reach index *`n - 1`. The test cases are generated such that you can reach index `n - 1`.
-
- 
-
-Example 1:
-
-```
-**Input:** nums = [2,3,1,1,4]
-**Output:** 2
-**Explanation:** The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
-```
-
-Example 2:
-
-```
-**Input:** nums = [2,3,0,1,4]
-**Output:** 2
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= nums.length <= 10^4`
-	- `0 <= nums[i] <= 1000`
-	- It's guaranteed that you can reach `nums[n - 1]`.
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memo
-Key idea: Minimum jumps from position i equals one plus the minimum from all reachable positions.
-Complexity: O(n²) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-   
-    public int jump(int[] nums) {
-        int[] val = new int[nums.length];
-        Arrays.fill(val,-1);
-        return countJump(0,nums,val);
-        
-    }
-
-    private int countJump(int i ,  int[] nums, int[] val){
-
-        if(i >=nums.length-1){
-            return 0;
-        }
-
-       if(val[i]!=-1){
-            return val[i];
-       }
-        int min = 1000000;
-
-       for(int k = 1;k<=nums[i];k++){
-            min= Math.min(min,1+countJump(i+k,nums,val));
-       }
-       return val[i]=min;
-
-    }
-}
-```
-
-</details>
-
-### 🟡 55. Jump Game
-
-**Medium** · 🏷️ Array, Dynamic Programming, Greedy · 📅 2026-06-13
-
-#### 📄 Problem
-
-You are given an integer array `nums`. You are initially positioned at the array's **first index**, and each element in the array represents your maximum jump length at that position.
-
-Return `true`* if you can reach the last index, or *`false`* otherwise*.
-
- 
-
-Example 1:
-
-```
-**Input:** nums = [2,3,1,1,4]
-**Output:** true
-**Explanation:** Jump 1 step from index 0 to 1, then 3 steps to the last index.
-```
-
-Example 2:
-
-```
-**Input:** nums = [3,2,1,0,4]
-**Output:** false
-**Explanation:** You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= nums.length <= 10^4`
-	- `0 <= nums[i] <= 10^5`
-
-#### 💡 Revision note
-
-```text
-Pattern: Top-down DP with memo
-Key idea: Memoize reachability from each position and short-circuit upon finding any valid jump path to the end.
-Complexity: O(n²) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public boolean canJump(int[] nums) {
-
-        Boolean[] val = new Boolean[nums.length];
-
-        return checkJump(0,nums,val);
-        
-    }
-
-    private boolean checkJump(int i , int[] nums,Boolean[] val){
-
-        if(i >= nums.length-1){
-            return true;
-        }
-
-        if (nums[i]==0){
-            return false;
-        }
-        if(val[i]!=null){
-            return val[i];
-        }
-
-        for(int j = 1;j<=nums[i];j++){
-            if(checkJump(i+j,nums,val)){
-                return val[i]=true;
-            }
-        }
-
-        return val[i]=false;
-    }
-}
-```
-
-</details>
-
-### 🟡 122. Best Time to Buy and Sell Stock II
-
-**Medium** · 🏷️ Array, Dynamic Programming, Greedy · 📅 2026-07-11
-
-#### 📄 Problem
-
-You are given an integer array `prices` where `prices[i]` is the price of a given stock on the `i^th` day.
-
-On each day, you may decide to buy and/or sell the stock. You can only hold **at most one** share of the stock at any time. However, you can sell and buy the stock multiple times on the **same day**, ensuring you never hold more than one share of the stock.
-
-Find and return *the **maximum** profit you can achieve*.
-
- 
-
-Example 1:
-
-```
-**Input:** prices = [7,1,5,3,6,4]
-**Output:** 7
-**Explanation:** Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
-Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
-Total profit is 4 + 3 = 7.
-```
-
-Example 2:
-
-```
-**Input:** prices = [1,2,3,4,5]
-**Output:** 4
-**Explanation:** Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
-Total profit is 4.
-```
-
-Example 3:
-
-```
-**Input:** prices = [7,6,4,3,1]
-**Output:** 0
-**Explanation:** There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= prices.length <= 3 * 10^4`
-	- `0 <= prices[i] <= 10^4`
-
-#### 💡 Revision note
-
-```text
-Pattern: Greedy peak capture
-Key idea: With unlimited free transactions, sum every consecutive daily price increase.
-Complexity: O(n) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int maxProfit(int[] arr) {   
-
-        int ans =0;
-        for(int i =1 ;i<arr.length;i++) {
-            if(arr[i-1]<arr[i]){
-                ans = ans + arr[i]-arr[i-1];
-            }
-        }
-        return ans;
-    }
-
-
-    private int findmax(int i, int buy, int[] arr, int[][] dp){
-        if( i == arr.length){
-            return 0;
-        }
-
-        if(dp[i][buy] != -1){
-            return dp[i][buy];
-        }
-        int profit = 0;
-        if(buy == 1){
-            profit = Integer.max(-arr[i]+findmax(i+1,0,arr,dp) , 0 + findmax(i+1,1,arr,dp));
-        }else{
-            profit = Integer.max(arr[i]+findmax(i+1,1,arr,dp) , 0 + findmax(i+1,0,arr,dp));
-        }
-        return dp[i][buy] = profit;
-    }
-
-  
-}
-```
-
-</details>
-
-### 🟡 134. Gas Station
-
-**Medium** · 🏷️ Array, Greedy · 📅 2025-12-04
-
-#### 📄 Problem
-
-There are `n` gas stations along a circular route, where the amount of gas at the `i^th` station is `gas[i]`.
-
-You have a car with an unlimited gas tank and it costs `cost[i]` of gas to travel from the `i^th` station to its next `(i + 1)^th` station. You begin the journey with an empty tank at one of the gas stations.
-
-Given two integer arrays `gas` and `cost`, return *the starting gas station's index if you can travel around the circuit once in the clockwise direction, otherwise return* `-1`. If there exists a solution, it is **guaranteed** to be **unique**.
-
- 
-
-Example 1:
-
-```
-**Input:** gas = [1,2,3,4,5], cost = [3,4,5,1,2]
-**Output:** 3
-**Explanation:**
-Start at station 3 (index 3) and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
-Travel to station 4. Your tank = 4 - 1 + 5 = 8
-Travel to station 0. Your tank = 8 - 2 + 1 = 7
-Travel to station 1. Your tank = 7 - 3 + 2 = 6
-Travel to station 2. Your tank = 6 - 4 + 3 = 5
-Travel to station 3. The cost is 5. Your gas is just enough to travel back to station 3.
-Therefore, return 3 as the starting index.
-```
-
-Example 2:
-
-```
-**Input:** gas = [2,3,4], cost = [3,4,3]
-**Output:** -1
-**Explanation:**
-You can't start at station 0 or 1, as there is not enough gas to travel to the next station.
-Let's start at station 2 and fill up with 4 unit of gas. Your tank = 0 + 4 = 4
-Travel to station 0. Your tank = 4 - 3 + 2 = 3
-Travel to station 1. Your tank = 3 - 3 + 3 = 3
-You cannot travel back to station 2, as it requires 4 unit of gas but you only have 3.
-Therefore, you can't travel around the circuit once no matter where you start.
-```
-
- 
-
-**Constraints:**
-
-	- `n == gas.length == cost.length`
-	- `1 <= n <= 10^5`
-	- `0 <= gas[i], cost[i] <= 10^4`
-	- The input is generated such that the answer is unique.
-
-#### 💡 Revision note
-
-```text
-Pattern: Single-pass greedy
-Key idea: If total balance ≥ 0, solution exists. When balance goes negative, all prior starts fail—skip to next candidate.
-Complexity: O(n) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int canCompleteCircuit(int[] gas, int[] cost) {
-        int total = 0;
-        int starting = 0;
-        int remain = 0;
-        int n = gas.length;
-
-        for(int i=0; i<n; i++){
-            total = total + gas[i] - cost[i];
-            remain = remain + gas[i] - cost[i];
-            if(remain<0){
-                remain = 0;
-                starting=i+1;
-            }
-        }
-        if(total<0){
-            return -1;
-        }
-
-        return starting;
-        
-    }
-}
-```
-
-</details>
-
-### 🟡 846. Hand of Straights
-
-**Medium** · 🏷️ Array, Hash Table, Greedy, Sorting · 📅 2022-09-09
-
-#### 📄 Problem
-
-Alice has some number of cards and she wants to rearrange the cards into groups so that each group is of size `groupSize`, and consists of `groupSize` consecutive cards.
-
-Given an integer array `hand` where `hand[i]` is the value written on the `i^th` card and an integer `groupSize`, return `true` if she can rearrange the cards, or `false` otherwise.
-
- 
-
-Example 1:
-
-```
-**Input:** hand = [1,2,3,6,2,3,4,7,8], groupSize = 3
-**Output:** true
-**Explanation:** Alice's hand can be rearranged as [1,2,3],[2,3,4],[6,7,8]
-```
-
-Example 2:
-
-```
-**Input:** hand = [1,2,3,4,5], groupSize = 4
-**Output:** false
-**Explanation:** Alice's hand can not be rearranged into groups of 4.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= hand.length <= 10^4`
-	- `0 <= hand[i] <= 10^9`
-	- `1 <= groupSize <= hand.length`
-
- 
-
-**Note:** This question is the same as 1296: https://leetcode.com/problems/divide-array-in-sets-of-k-consecutive-numbers/
-
-#### 💡 Revision note
-
-```text
-Pattern: Greedy with sorted counter
-Key idea: Process smallest cards first, greedily forming groups; any gap in consecutive requirements means no solution.
-Complexity: O(n log n) time / O(n) space
-```
-
-<details><summary><b>🧩 Solution (Python) — click to expand</b></summary>
-
-```python
-class Solution:
-    def isNStraightHand(self, hand, groupSize) :
-        if len(hand) % groupSize != 0:
-            return False
-        
-        count = collections.Counter(hand)
-        keys = sorted(list(count.keys()))
-        
-        for card in keys:
-            if count[card] == 0:
-                continue
-            total = count[card]
-            for n in range(card + 1, card + groupSize):
-                count[n] -= total
-                if count[n] < 0:
-                    return False
-            count[card] -= total
-        
-        return True
-```
-
-</details>
-
-### 🟡 2486. Append Characters to String to Make Subsequence
-
-**Medium** · 🏷️ Two Pointers, String, Greedy · 📅 2026-07-12
-
-#### 📄 Problem
-
-You are given two strings `s` and `t` consisting of only lowercase English letters.
-
-Return *the minimum number of characters that need to be appended to the end of *`s`* so that *`t`* becomes a **subsequence** of *`s`.
-
-A **subsequence** is a string that can be derived from another string by deleting some or no characters without changing the order of the remaining characters.
-
- 
-
-Example 1:
-
-```
-**Input:** s = "coaching", t = "coding"
-**Output:** 4
-**Explanation:** Append the characters "ding" to the end of s so that s = "coachingding".
-Now, t is a subsequence of s ("**co**aching**ding**").
-It can be shown that appending any 3 characters to the end of s will never make t a subsequence.
-```
-
-Example 2:
-
-```
-**Input:** s = "abcde", t = "a"
-**Output:** 0
-**Explanation:** t is already a subsequence of s ("**a**bcde").
-```
-
-Example 3:
-
-```
-**Input:** s = "z", t = "abcde"
-**Output:** 5
-**Explanation:** Append the characters "abcde" to the end of s so that s = "zabcde".
-Now, t is a subsequence of s ("z**abcde**").
-It can be shown that appending any 4 characters to the end of s will never make t a subsequence.
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= s.length, t.length <= 10^5`
-	- `s` and `t` consist only of lowercase English letters.
-
-#### 💡 Revision note
-
-_(not generated yet — run `python3 sync.py` to fill this in)_
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int appendCharacters(String s, String t) {
-         int n = s.length();
-        int m = t.length();
-        int i = 0;
-        int j = 0;
-
-        while(i<n && j<m){
-            if(s.charAt(i) == t.charAt(j)){
-                j++;
-            }
-            i++;
-        }
-        System.out.println(j);
-        return Integer.max(0,t.length()-j);
-    }
-}
-```
-
-</details>
-
-### 🟡 2966. Divide Array Into Arrays With Max Difference
-
-**Medium** · 🏷️ Array, Greedy, Sorting · 📅 2024-02-01
-
-#### 📄 Problem
-
-You are given an integer array `nums` of size `n` where `n` is a multiple of 3 and a positive integer `k`.
-
-Divide the array `nums` into `n / 3` arrays of size **3** satisfying the following condition:
-
-	- The difference between **any** two elements in one array is **less than or equal** to `k`.
-
-Return a **2D** array containing the arrays. If it is impossible to satisfy the conditions, return an empty array. And if there are multiple answers, return **any** of them.
-
- 
-
-Example 1:
-
-**Input:** nums = [1,3,4,8,7,9,3,5,1], k = 2
-
-**Output:** [[1,1,3],[3,4,5],[7,8,9]]
-
-**Explanation:**
-
-The difference between any two elements in each array is less than or equal to 2.
-
-Example 2:
-
-**Input:** nums = [2,4,2,2,5,2], k = 2
-
-**Output:** []
-
-**Explanation:**
-
-Different ways to divide `nums` into 2 arrays of size 3 are:
-
-	- [[2,2,2],[2,4,5]] (and its permutations)
-	- [[2,2,4],[2,2,5]] (and its permutations)
-
-Because there are four 2s there will be an array with the elements 2 and 5 no matter how we divide it. since `5 - 2 = 3 > k`, the condition is not satisfied and so there is no valid division.
-
-Example 3:
-
-**Input:** nums = [4,2,9,8,2,12,7,12,10,5,8,5,5,7,9,2,5,11], k = 14
-
-**Output:** [[2,2,2],[4,5,5],[5,5,7],[7,8,8],[9,9,10],[11,12,12]]
-
-**Explanation:**
-
-The difference between any two elements in each array is less than or equal to 14.
-
- 
-
-**Constraints:**
-
-	- `n == nums.length`
-	- `1 <= n <= 10^5`
-	- `n `is a multiple of 3
-	- `1 <= nums[i] <= 10^5`
-	- `1 <= k <= 10^5`
-
-#### 💡 Revision note
-
-```text
-Pattern: Greedy sorting
-Key idea: Consecutive triplets in sorted array minimize max-min; if any triplet exceeds k, no valid division exists.
-Complexity: O(n log n) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-import java.util.Arrays;
-class Solution {
-    public int[][] divideArray(int[] nums, int k) {
-          int len = nums.length;
-        int[][] res = new int[len/3][3];
-        Arrays.sort(nums);
-        for(int i=0,m=0; i<len; i=i+3,m++){
-            res[m][0] = nums[i];
-            for(int j=1; j<3; j++){
-                if(nums[i+j]-res[m][0]<=k){
-                    res[m][j]=nums[i+j];
-                } else{
-                    return new int[0][0];
-                }
-            }
-        }
-        return res;
-}}
 ```
 
 </details>
@@ -10182,6 +10270,262 @@ class Solution {
 
 ---
 
+## Hash Table (3)
+
+### 🟢 1. Two Sum
+
+**Easy** · 🏷️ Array, Hash Table · 📅 2025-11-01
+
+#### 📄 Problem
+
+Given an array of integers `nums` and an integer `target`, return *indices of the two numbers such that they add up to `target`*.
+
+You may assume that each input would have ***exactly* one solution**, and you may not use the *same* element twice.
+
+You can return the answer in any order.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [2,7,11,15], target = 9
+**Output:** [0,1]
+**Explanation:** Because nums[0] + nums[1] == 9, we return [0, 1].
+```
+
+Example 2:
+
+```
+**Input:** nums = [3,2,4], target = 6
+**Output:** [1,2]
+```
+
+Example 3:
+
+```
+**Input:** nums = [3,3], target = 6
+**Output:** [0,1]
+```
+
+ 
+
+**Constraints:**
+
+	- `2 <= nums.length <= 10^4`
+	- `-10^9 <= nums[i] <= 10^9`
+	- `-10^9 <= target <= 10^9`
+	- **Only one valid answer exists.**
+
+ 
+
+**Follow-up: **Can you come up with an algorithm that is less than `O(n^2)` time complexity?
+
+#### 💡 Revision note
+
+```text
+Pattern: Brute force
+Key idea: Check all pairs until finding the sum that equals target.
+Complexity: O(n²) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+
+        for(int i = 0;i<n ;i++){
+            for(int j = i+1;j<n;j++){
+                if(nums[i]+nums[j]==target){
+                    return new int[]{i,j};
+                }
+            }
+        }
+        return new int[]{-1};
+    }
+}
+```
+
+</details>
+
+### 🟢 205. Isomorphic Strings
+
+**Easy** · 🏷️ Hash Table, String · 📅 2026-07-19
+
+#### 📄 Problem
+
+Given two strings `s` and `t`, *determine if they are isomorphic*.
+
+Two strings `s` and `t` are isomorphic if the characters in `s` can be replaced to get `t`.
+
+All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character, but a character may map to itself.
+
+ 
+
+Example 1:
+
+**Input:** s = "egg", t = "add"
+
+**Output:** true
+
+**Explanation:**
+
+The strings `s` and `t` can be made identical by:
+
+	- Mapping `'e'` to `'a'`.
+	- Mapping `'g'` to `'d'`.
+
+Example 2:
+
+**Input:** s = "f11", t = "b23"
+
+**Output:** false
+
+**Explanation:**
+
+The strings `s` and `t` can not be made identical as `'1'` needs to be mapped to both `'2'` and `'3'`.
+
+Example 3:
+
+**Input:** s = "paper", t = "title"
+
+**Output:** true
+
+ 
+
+**Constraints:**
+
+	- `1 <= s.length <= 5 * 10^4`
+	- `t.length == s.length`
+	- `s` and `t` consist of any valid ascii character.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+
+        Map<Character,Character> map1 = new HashMap<>();
+        Map<Character,Character> map2 = new HashMap<>();
+
+        if(s.length() != t.length()){
+            return false;
+        }
+
+        int n = s.length();
+        for(int i = 0; i<n; i++){
+            if(map1.get(s.charAt(i)) != null ){
+                if(map1.get(s.charAt(i)) != t.charAt(i)){
+                    return false;
+                }
+            }
+            if(map2.get(t.charAt(i)) !=null){
+                if( map2.get(t.charAt(i)) != s.charAt(i)){
+                    return false;
+                }
+            }
+
+            map1.put(s.charAt(i),t.charAt(i));
+            map2.put(t.charAt(i),s.charAt(i));
+        }
+        return true;
+    }
+}
+```
+
+</details>
+
+### 🟢 929. Unique Email Addresses
+
+**Easy** · 🏷️ Array, Hash Table, String · 📅 2026-07-18
+
+#### 📄 Problem
+
+Every **valid email** consists of a **local name** and a **domain name**, separated by the `'@'` sign. Besides lowercase letters, the email may contain one or more `'.'` or `'+'`.
+
+	- For example, in `"alice@leetcode.com"`, `"alice"` is the **local name**, and `"leetcode.com"` is the **domain name**.
+
+If you add periods `'.'` between some characters in the **local name** part of an email address, mail sent there will be forwarded to the same address without dots in the local name. Note that this rule **does not apply** to **domain names**.
+
+	- For example, `"alice.z@leetcode.com"` and `"alicez@leetcode.com"` forward to the same email address.
+
+If you add a plus `'+'` in the **local name**, everything after the first plus sign **will be ignored**. This allows certain emails to be filtered. Note that this rule **does not apply** to **domain names**.
+
+	- For example, `"m.y+name@email.com"` will be forwarded to `"my@email.com"`.
+
+It is possible to use both of these rules at the same time.
+
+Given an array of strings `emails` where we send one email to each `emails[i]`, return *the number of different addresses that actually receive mails*.
+
+ 
+
+Example 1:
+
+```
+**Input:** emails = ["test.email+alex@leetcode.com","test.e.mail+bob.cathy@leetcode.com","testemail+david@lee.tcode.com"]
+**Output:** 2
+**Explanation:** "testemail@leetcode.com" and "testemail@lee.tcode.com" actually receive mails.
+```
+
+Example 2:
+
+```
+**Input:** emails = ["a@leetcode.com","b@leetcode.com","c@leetcode.com"]
+**Output:** 3
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= emails.length <= 100`
+	- `1 <= emails[i].length <= 100`
+	- `emails[i]` consist of lowercase English letters, `'+'`, `'.'` and `'@'`.
+	- Each `emails[i]` contains exactly one `'@'` character.
+	- All local and domain names are non-empty.
+	- Local names do not start with a `'+'` character.
+	- Domain names end with the `".com"` suffix.
+	- Domain names must contain at least one character before `".com"` suffix.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int numUniqueEmails(String[] emails) {
+
+        Set<String> set = new HashSet<>();
+
+        for( String mail : emails){
+            String[] split = mail.split("@");
+            String localName = split[0].replace(".","");
+            int i = localName.indexOf("+");
+            if(i!=-1)
+                localName = localName.substring(0,i);
+           
+            localName = localName.concat("@");
+            String resultName = localName.concat(split[1]);
+            set.add(resultName);
+             System.out.println(resultName);
+        }
+        return set.size();
+    }
+}
+```
+
+</details>
+
+---
+
 ## Math (3)
 
 ### 🟡 150. Evaluate Reverse Polish Notation
@@ -10792,171 +11136,6 @@ class Solution {
         }
         return val[i];
 
-    }
-}
-```
-
-</details>
-
----
-
-## Hash Table (2)
-
-### 🟢 1. Two Sum
-
-**Easy** · 🏷️ Array, Hash Table · 📅 2025-11-01
-
-#### 📄 Problem
-
-Given an array of integers `nums` and an integer `target`, return *indices of the two numbers such that they add up to `target`*.
-
-You may assume that each input would have ***exactly* one solution**, and you may not use the *same* element twice.
-
-You can return the answer in any order.
-
- 
-
-Example 1:
-
-```
-**Input:** nums = [2,7,11,15], target = 9
-**Output:** [0,1]
-**Explanation:** Because nums[0] + nums[1] == 9, we return [0, 1].
-```
-
-Example 2:
-
-```
-**Input:** nums = [3,2,4], target = 6
-**Output:** [1,2]
-```
-
-Example 3:
-
-```
-**Input:** nums = [3,3], target = 6
-**Output:** [0,1]
-```
-
- 
-
-**Constraints:**
-
-	- `2 <= nums.length <= 10^4`
-	- `-10^9 <= nums[i] <= 10^9`
-	- `-10^9 <= target <= 10^9`
-	- **Only one valid answer exists.**
-
- 
-
-**Follow-up: **Can you come up with an algorithm that is less than `O(n^2)` time complexity?
-
-#### 💡 Revision note
-
-```text
-Pattern: Brute force
-Key idea: Check all pairs until finding the sum that equals target.
-Complexity: O(n²) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        int n = nums.length;
-
-        for(int i = 0;i<n ;i++){
-            for(int j = i+1;j<n;j++){
-                if(nums[i]+nums[j]==target){
-                    return new int[]{i,j};
-                }
-            }
-        }
-        return new int[]{-1};
-    }
-}
-```
-
-</details>
-
-### 🟢 929. Unique Email Addresses
-
-**Easy** · 🏷️ Array, Hash Table, String · 📅 2026-07-18
-
-#### 📄 Problem
-
-Every **valid email** consists of a **local name** and a **domain name**, separated by the `'@'` sign. Besides lowercase letters, the email may contain one or more `'.'` or `'+'`.
-
-	- For example, in `"alice@leetcode.com"`, `"alice"` is the **local name**, and `"leetcode.com"` is the **domain name**.
-
-If you add periods `'.'` between some characters in the **local name** part of an email address, mail sent there will be forwarded to the same address without dots in the local name. Note that this rule **does not apply** to **domain names**.
-
-	- For example, `"alice.z@leetcode.com"` and `"alicez@leetcode.com"` forward to the same email address.
-
-If you add a plus `'+'` in the **local name**, everything after the first plus sign **will be ignored**. This allows certain emails to be filtered. Note that this rule **does not apply** to **domain names**.
-
-	- For example, `"m.y+name@email.com"` will be forwarded to `"my@email.com"`.
-
-It is possible to use both of these rules at the same time.
-
-Given an array of strings `emails` where we send one email to each `emails[i]`, return *the number of different addresses that actually receive mails*.
-
- 
-
-Example 1:
-
-```
-**Input:** emails = ["test.email+alex@leetcode.com","test.e.mail+bob.cathy@leetcode.com","testemail+david@lee.tcode.com"]
-**Output:** 2
-**Explanation:** "testemail@leetcode.com" and "testemail@lee.tcode.com" actually receive mails.
-```
-
-Example 2:
-
-```
-**Input:** emails = ["a@leetcode.com","b@leetcode.com","c@leetcode.com"]
-**Output:** 3
-```
-
- 
-
-**Constraints:**
-
-	- `1 <= emails.length <= 100`
-	- `1 <= emails[i].length <= 100`
-	- `emails[i]` consist of lowercase English letters, `'+'`, `'.'` and `'@'`.
-	- Each `emails[i]` contains exactly one `'@'` character.
-	- All local and domain names are non-empty.
-	- Local names do not start with a `'+'` character.
-	- Domain names end with the `".com"` suffix.
-	- Domain names must contain at least one character before `".com"` suffix.
-
-#### 💡 Revision note
-
-_(not generated yet — run `python3 sync.py` to fill this in)_
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int numUniqueEmails(String[] emails) {
-
-        Set<String> set = new HashSet<>();
-
-        for( String mail : emails){
-            String[] split = mail.split("@");
-            String localName = split[0].replace(".","");
-            int i = localName.indexOf("+");
-            if(i!=-1)
-                localName = localName.substring(0,i);
-           
-            localName = localName.concat("@");
-            String resultName = localName.concat(split[1]);
-            set.add(resultName);
-             System.out.println(resultName);
-        }
-        return set.size();
     }
 }
 ```
