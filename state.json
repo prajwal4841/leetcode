@@ -4243,6 +4243,76 @@
       "runtime": 3,
       "memory": 47604000,
       "submitted_at": 1784482155
+    },
+    "majority-element": {
+      "frontendQuestionId": "169",
+      "title": "Majority Element",
+      "titleSlug": "majority-element",
+      "difficulty": "Easy",
+      "acRate": 66.4284989191147,
+      "topicTags": [
+        {
+          "name": "Array",
+          "slug": "array"
+        },
+        {
+          "name": "Hash Table",
+          "slug": "hash-table"
+        },
+        {
+          "name": "Divide and Conquer",
+          "slug": "divide-and-conquer"
+        },
+        {
+          "name": "Sorting",
+          "slug": "sorting"
+        },
+        {
+          "name": "Counting",
+          "slug": "counting"
+        }
+      ],
+      "statement_md": "Given an array `nums` of size `n`, return *the majority element*.\n\nThe majority element is the element that appears more than `\u230an / 2\u230b` times. You may assume that the majority element always exists in the array.\n\n\u00a0\n\nExample 1:\n\n```\n**Input:** nums = [3,2,3]\n**Output:** 3\n```\nExample 2:\n\n```\n**Input:** nums = [2,2,1,1,1,2,2]\n**Output:** 2\n```\n\n\u00a0\n\n**Constraints:**\n\n\t- `n == nums.length`\n\t- `1 <= n <= 5 * 10^4`\n\t- `-10^9 <= nums[i] <= 10^9`\n\t- The input is generated such that a majority element will exist in the array.\n\n\u00a0\n\n**Follow-up:** Could you solve the problem in linear time and in `O(1)` space?",
+      "code": "class Solution {\n    public int majorityElement(int[] nums) {\n\n        int freq = 1;\n        int curr = nums[0];\n        int n = nums.length;\n\n        for(int i =0; i<n; i++){\n            if(nums[i]==curr){\n                freq++;\n            }else{\n                freq--;\n                if(freq == 0){\n                    freq++;\n                    curr = nums[i];\n                }\n            }\n        }\n\n        return curr;\n\n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 1,
+      "memory": 55580000,
+      "submitted_at": 1784571528
+    },
+    "adding-spaces-to-a-string": {
+      "frontendQuestionId": "2109",
+      "title": "Adding Spaces to a String",
+      "titleSlug": "adding-spaces-to-a-string",
+      "difficulty": "Medium",
+      "acRate": 71.8443008594191,
+      "topicTags": [
+        {
+          "name": "Array",
+          "slug": "array"
+        },
+        {
+          "name": "Two Pointers",
+          "slug": "two-pointers"
+        },
+        {
+          "name": "String",
+          "slug": "string"
+        },
+        {
+          "name": "Simulation",
+          "slug": "simulation"
+        }
+      ],
+      "statement_md": "You are given a **0-indexed** string `s` and a **0-indexed** integer array `spaces` that describes the indices in the original string where spaces will be added. Each space should be inserted **before** the character at the given index.\n\n\t- For example, given `s = \"EnjoyYourCoffee\"` and `spaces = [5, 9]`, we place spaces before `'Y'` and `'C'`, which are at indices `5` and `9` respectively. Thus, we obtain `\"Enjoy **Y**our **C**offee\"`.\n\nReturn** ***the modified string **after** the spaces have been added.*\n\n\u00a0\n\nExample 1:\n\n```\n**Input:** s = \"LeetcodeHelpsMeLearn\", spaces = [8,13,15]\n**Output:** \"Leetcode Helps Me Learn\"\n**Explanation:** \nThe indices 8, 13, and 15 correspond to the underlined characters in \"Leetcode**H**elps**M**e**L**earn\".\nWe then place spaces before those characters.\n```\n\nExample 2:\n\n```\n**Input:** s = \"icodeinpython\", spaces = [1,5,7,9]\n**Output:** \"i code in py thon\"\n**Explanation:**\nThe indices 1, 5, 7, and 9 correspond to the underlined characters in \"i**c**ode**i**n**p**y**t**hon\".\nWe then place spaces before those characters.\n```\n\nExample 3:\n\n```\n**Input:** s = \"spacing\", spaces = [0,1,2,3,4,5,6]\n**Output:** \" s p a c i n g\"\n**Explanation:**\nWe are also able to place spaces before the first character of the string.\n```\n\n\u00a0\n\n**Constraints:**\n\n\t- `1 <= s.length <= 3 * 10^5`\n\t- `s` consists only of lowercase and uppercase English letters.\n\t- `1 <= spaces.length <= 3 * 10^5`\n\t- `0 <= spaces[i] <= s.length - 1`\n\t- All the values of `spaces` are **strictly increasing**.",
+      "code": "class Solution {\n    public String addSpaces(String s, int[] spaces) {\n\n        int curr = 0;\n        StringBuilder sb = new StringBuilder();\n        int j =0;\n        for(int i=0 ; i<s.length(); i++){\n            if( j<spaces.length && i == spaces[j] ){\n                sb.append(' ');\n                j++;\n            }\n            sb.append(s.charAt(i));\n            \n        }\n        return sb.toString();\n        \n    }\n}",
+      "lang_name": "java",
+      "lang_verbose": "Java",
+      "md_lang": "java",
+      "runtime": 20,
+      "memory": 90028000,
+      "submitted_at": 1784574899
     }
   }
 }

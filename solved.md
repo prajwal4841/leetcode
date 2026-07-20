@@ -1,6 +1,6 @@
 # LeetCode Solved Problems — Revision Sheet
 
-**Total: 140**  |  Easy: 37  |  Medium: 90  |  Hard: 13
+**Total: 142**  |  Easy: 38  |  Medium: 91  |  Hard: 13
 
 Each problem is filed under its most specific topic tag (rarest tag it carries).
 
@@ -30,12 +30,13 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Math (3)](#math-3)
 - [Array (2)](#array-2)
 - [Breadth-First Search (2)](#breadth-first-search-2)
+- [Counting (2)](#counting-2)
 - [Prefix Sum (2)](#prefix-sum-2)
+- [Simulation (2)](#simulation-2)
 - [Stack (2)](#stack-2)
 - [Topological Sort (2)](#topological-sort-2)
 - [Bucket Sort (1)](#bucket-sort-1)
 - [Combinatorics (1)](#combinatorics-1)
-- [Counting (1)](#counting-1)
 - [Data Stream (1)](#data-stream-1)
 - [Doubly-Linked List (1)](#doubly-linked-list-1)
 - [Enumeration (1)](#enumeration-1)
@@ -47,7 +48,6 @@ Each problem is filed under its most specific topic tag (rarest tag it carries).
 - [Number Theory (1)](#number-theory-1)
 - [Queue (1)](#queue-1)
 - [Quickselect (1)](#quickselect-1)
-- [Simulation (1)](#simulation-1)
 - [String Matching (1)](#string-matching-1)
 
 ## Tree (10)
@@ -11144,6 +11144,173 @@ class Solution {
 
 ---
 
+## Counting (2)
+
+### 🟢 169. Majority Element
+
+**Easy** · 🏷️ Array, Hash Table, Divide and Conquer, Sorting, Counting · 📅 2026-07-20
+
+#### 📄 Problem
+
+Given an array `nums` of size `n`, return *the majority element*.
+
+The majority element is the element that appears more than `⌊n / 2⌋` times. You may assume that the majority element always exists in the array.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [3,2,3]
+**Output:** 3
+```
+Example 2:
+
+```
+**Input:** nums = [2,2,1,1,1,2,2]
+**Output:** 2
+```
+
+ 
+
+**Constraints:**
+
+	- `n == nums.length`
+	- `1 <= n <= 5 * 10^4`
+	- `-10^9 <= nums[i] <= 10^9`
+	- The input is generated such that a majority element will exist in the array.
+
+ 
+
+**Follow-up:** Could you solve the problem in linear time and in `O(1)` space?
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int majorityElement(int[] nums) {
+
+        int freq = 1;
+        int curr = nums[0];
+        int n = nums.length;
+
+        for(int i =0; i<n; i++){
+            if(nums[i]==curr){
+                freq++;
+            }else{
+                freq--;
+                if(freq == 0){
+                    freq++;
+                    curr = nums[i];
+                }
+            }
+        }
+
+        return curr;
+
+    }
+}
+```
+
+</details>
+
+### 🟡 621. Task Scheduler
+
+**Medium** · 🏷️ Array, Hash Table, Greedy, Sorting, Heap (Priority Queue), Counting · 📅 2026-03-31
+
+#### 📄 Problem
+
+You are given an array of CPU `tasks`, each labeled with a letter from A to Z, and a number `n`. Each CPU interval can be idle or allow the completion of one task. Tasks can be completed in any order, but there's a constraint: there has to be a gap of **at least** `n` intervals between two tasks with the same label.
+
+Return the **minimum** number of CPU intervals required to complete all tasks.
+
+ 
+
+Example 1:
+
+**Input:** tasks = ["A","A","A","B","B","B"], n = 2
+
+**Output:** 8
+
+**Explanation:** A possible sequence is: A -> B -> idle -> A -> B -> idle -> A -> B.
+
+After completing task A, you must wait two intervals before doing A again. The same applies to task B. In the 3^rd interval, neither A nor B can be done, so you idle. By the 4^th interval, you can do A again as 2 intervals have passed.
+
+Example 2:
+
+**Input:** tasks = ["A","C","A","B","D","B"], n = 1
+
+**Output:** 6
+
+**Explanation:** A possible sequence is: A -> B -> C -> D -> A -> B.
+
+With a cooling interval of 1, you can repeat a task after just one other task.
+
+Example 3:
+
+**Input:** tasks = ["A","A","A", "B","B","B"], n = 3
+
+**Output:** 10
+
+**Explanation:** A possible sequence is: A -> B -> idle -> idle -> A -> B -> idle -> idle -> A -> B.
+
+There are only two types of tasks, A and B, which need to be separated by 3 intervals. This leads to idling twice between repetitions of these tasks.
+
+ 
+
+**Constraints:**
+
+	- `1 <= tasks.length <= 10^4`
+	- `tasks[i]` is an uppercase English letter.
+	- `0 <= n <= 100`
+
+#### 💡 Revision note
+
+```text
+Pattern: Most frequent task bottleneck
+Key idea: Most frequent task determines schedule length; must space occurrences n+1 apart, filling gaps with lower-frequency tasks.
+Complexity: O(n) time / O(1) space
+```
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+
+        int[] charMap = new int[26];
+        int maxFreq = Integer.MIN_VALUE;
+        int sameMaxFreqCount = 0;
+        for(int i=0; i<tasks.length; i++){
+            charMap[tasks[i]-'A']++;
+            maxFreq = Integer.max(charMap[tasks[i]-'A'],maxFreq);
+        }
+
+        for(int i =0;i<26;i++){
+            if(charMap[i] == maxFreq){
+                sameMaxFreqCount++;
+            }
+        }
+
+        System.out.println(sameMaxFreqCount);
+        System.out.println(maxFreq);
+
+
+        return Integer.max(tasks.length,((maxFreq-1)*(n+1))+sameMaxFreqCount);
+
+        
+    }
+}
+```
+
+</details>
+
+---
+
 ## Prefix Sum (2)
 
 ### 🟡 238. Product of Array Except Self
@@ -11286,6 +11453,158 @@ class Solution {
             map.put(curr,map.getOrDefault(curr,0)+1);
         }
         return ans;
+    }
+}
+```
+
+</details>
+
+---
+
+## Simulation (2)
+
+### 🟢 1929. Concatenation of Array
+
+**Easy** · 🏷️ Array, Simulation · 📅 2026-07-12
+
+#### 📄 Problem
+
+Given an integer array `nums` of length `n`, you want to create an array `ans` of length `2n` where `ans[i] == nums[i]` and `ans[i + n] == nums[i]` for `0 <= i < n` (**0-indexed**).
+
+Specifically, `ans` is the **concatenation** of two `nums` arrays.
+
+Return *the array *`ans`.
+
+ 
+
+Example 1:
+
+```
+**Input:** nums = [1,2,1]
+**Output:** [1,2,1,1,2,1]
+**Explanation:** The array ans is formed as follows:
+- ans = [nums[0],nums[1],nums[2],nums[0],nums[1],nums[2]]
+- ans = [1,2,1,1,2,1]
+```
+
+Example 2:
+
+```
+**Input:** nums = [1,3,2,1]
+**Output:** [1,3,2,1,1,3,2,1]
+**Explanation:** The array ans is formed as follows:
+- ans = [nums[0],nums[1],nums[2],nums[3],nums[0],nums[1],nums[2],nums[3]]
+- ans = [1,3,2,1,1,3,2,1]
+```
+
+ 
+
+**Constraints:**
+
+	- `n == nums.length`
+	- `1 <= n <= 1000`
+	- `1 <= nums[i] <= 1000`
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public int[] getConcatenation(int[] nums) {
+        int n = nums.length;
+        int[] ans = new int[2*n];
+
+        for(int i=0;i<n;i++){
+            ans[i]=nums[i];
+            ans[i+n]=nums[i];
+        }
+
+        return ans;
+    }
+}
+```
+
+</details>
+
+### 🟡 2109. Adding Spaces to a String
+
+**Medium** · 🏷️ Array, Two Pointers, String, Simulation · 📅 2026-07-20
+
+#### 📄 Problem
+
+You are given a **0-indexed** string `s` and a **0-indexed** integer array `spaces` that describes the indices in the original string where spaces will be added. Each space should be inserted **before** the character at the given index.
+
+	- For example, given `s = "EnjoyYourCoffee"` and `spaces = [5, 9]`, we place spaces before `'Y'` and `'C'`, which are at indices `5` and `9` respectively. Thus, we obtain `"Enjoy **Y**our **C**offee"`.
+
+Return** ***the modified string **after** the spaces have been added.*
+
+ 
+
+Example 1:
+
+```
+**Input:** s = "LeetcodeHelpsMeLearn", spaces = [8,13,15]
+**Output:** "Leetcode Helps Me Learn"
+**Explanation:** 
+The indices 8, 13, and 15 correspond to the underlined characters in "Leetcode**H**elps**M**e**L**earn".
+We then place spaces before those characters.
+```
+
+Example 2:
+
+```
+**Input:** s = "icodeinpython", spaces = [1,5,7,9]
+**Output:** "i code in py thon"
+**Explanation:**
+The indices 1, 5, 7, and 9 correspond to the underlined characters in "i**c**ode**i**n**p**y**t**hon".
+We then place spaces before those characters.
+```
+
+Example 3:
+
+```
+**Input:** s = "spacing", spaces = [0,1,2,3,4,5,6]
+**Output:** " s p a c i n g"
+**Explanation:**
+We are also able to place spaces before the first character of the string.
+```
+
+ 
+
+**Constraints:**
+
+	- `1 <= s.length <= 3 * 10^5`
+	- `s` consists only of lowercase and uppercase English letters.
+	- `1 <= spaces.length <= 3 * 10^5`
+	- `0 <= spaces[i] <= s.length - 1`
+	- All the values of `spaces` are **strictly increasing**.
+
+#### 💡 Revision note
+
+_(not generated yet — run `python3 sync.py` to fill this in)_
+
+<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
+
+```java
+class Solution {
+    public String addSpaces(String s, int[] spaces) {
+
+        int curr = 0;
+        StringBuilder sb = new StringBuilder();
+        int j =0;
+        for(int i=0 ; i<s.length(); i++){
+            if( j<spaces.length && i == spaces[j] ){
+                sb.append(' ');
+                j++;
+            }
+            sb.append(s.charAt(i));
+            
+        }
+        return sb.toString();
+        
     }
 }
 ```
@@ -11896,101 +12215,6 @@ class Solution {
         int up = findpath(i-1,j,dp);
         int le = findpath(i,j-1,dp);
         return dp[i][j]=up+le;
-    }
-}
-```
-
-</details>
-
----
-
-## Counting (1)
-
-### 🟡 621. Task Scheduler
-
-**Medium** · 🏷️ Array, Hash Table, Greedy, Sorting, Heap (Priority Queue), Counting · 📅 2026-03-31
-
-#### 📄 Problem
-
-You are given an array of CPU `tasks`, each labeled with a letter from A to Z, and a number `n`. Each CPU interval can be idle or allow the completion of one task. Tasks can be completed in any order, but there's a constraint: there has to be a gap of **at least** `n` intervals between two tasks with the same label.
-
-Return the **minimum** number of CPU intervals required to complete all tasks.
-
- 
-
-Example 1:
-
-**Input:** tasks = ["A","A","A","B","B","B"], n = 2
-
-**Output:** 8
-
-**Explanation:** A possible sequence is: A -> B -> idle -> A -> B -> idle -> A -> B.
-
-After completing task A, you must wait two intervals before doing A again. The same applies to task B. In the 3^rd interval, neither A nor B can be done, so you idle. By the 4^th interval, you can do A again as 2 intervals have passed.
-
-Example 2:
-
-**Input:** tasks = ["A","C","A","B","D","B"], n = 1
-
-**Output:** 6
-
-**Explanation:** A possible sequence is: A -> B -> C -> D -> A -> B.
-
-With a cooling interval of 1, you can repeat a task after just one other task.
-
-Example 3:
-
-**Input:** tasks = ["A","A","A", "B","B","B"], n = 3
-
-**Output:** 10
-
-**Explanation:** A possible sequence is: A -> B -> idle -> idle -> A -> B -> idle -> idle -> A -> B.
-
-There are only two types of tasks, A and B, which need to be separated by 3 intervals. This leads to idling twice between repetitions of these tasks.
-
- 
-
-**Constraints:**
-
-	- `1 <= tasks.length <= 10^4`
-	- `tasks[i]` is an uppercase English letter.
-	- `0 <= n <= 100`
-
-#### 💡 Revision note
-
-```text
-Pattern: Most frequent task bottleneck
-Key idea: Most frequent task determines schedule length; must space occurrences n+1 apart, filling gaps with lower-frequency tasks.
-Complexity: O(n) time / O(1) space
-```
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int leastInterval(char[] tasks, int n) {
-
-        int[] charMap = new int[26];
-        int maxFreq = Integer.MIN_VALUE;
-        int sameMaxFreqCount = 0;
-        for(int i=0; i<tasks.length; i++){
-            charMap[tasks[i]-'A']++;
-            maxFreq = Integer.max(charMap[tasks[i]-'A'],maxFreq);
-        }
-
-        for(int i =0;i<26;i++){
-            if(charMap[i] == maxFreq){
-                sameMaxFreqCount++;
-            }
-        }
-
-        System.out.println(sameMaxFreqCount);
-        System.out.println(maxFreq);
-
-
-        return Integer.max(tasks.length,((maxFreq-1)*(n+1))+sameMaxFreqCount);
-
-        
     }
 }
 ```
@@ -13128,76 +13352,6 @@ class Solution {
             k--;
         }
         return q.peek();
-    }
-}
-```
-
-</details>
-
----
-
-## Simulation (1)
-
-### 🟢 1929. Concatenation of Array
-
-**Easy** · 🏷️ Array, Simulation · 📅 2026-07-12
-
-#### 📄 Problem
-
-Given an integer array `nums` of length `n`, you want to create an array `ans` of length `2n` where `ans[i] == nums[i]` and `ans[i + n] == nums[i]` for `0 <= i < n` (**0-indexed**).
-
-Specifically, `ans` is the **concatenation** of two `nums` arrays.
-
-Return *the array *`ans`.
-
- 
-
-Example 1:
-
-```
-**Input:** nums = [1,2,1]
-**Output:** [1,2,1,1,2,1]
-**Explanation:** The array ans is formed as follows:
-- ans = [nums[0],nums[1],nums[2],nums[0],nums[1],nums[2]]
-- ans = [1,2,1,1,2,1]
-```
-
-Example 2:
-
-```
-**Input:** nums = [1,3,2,1]
-**Output:** [1,3,2,1,1,3,2,1]
-**Explanation:** The array ans is formed as follows:
-- ans = [nums[0],nums[1],nums[2],nums[3],nums[0],nums[1],nums[2],nums[3]]
-- ans = [1,3,2,1,1,3,2,1]
-```
-
- 
-
-**Constraints:**
-
-	- `n == nums.length`
-	- `1 <= n <= 1000`
-	- `1 <= nums[i] <= 1000`
-
-#### 💡 Revision note
-
-_(not generated yet — run `python3 sync.py` to fill this in)_
-
-<details><summary><b>🧩 Solution (Java) — click to expand</b></summary>
-
-```java
-class Solution {
-    public int[] getConcatenation(int[] nums) {
-        int n = nums.length;
-        int[] ans = new int[2*n];
-
-        for(int i=0;i<n;i++){
-            ans[i]=nums[i];
-            ans[i+n]=nums[i];
-        }
-
-        return ans;
     }
 }
 ```
